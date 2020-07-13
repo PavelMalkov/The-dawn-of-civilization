@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class PositionPanel : MonoBehaviour
+public class Bild : MonoBehaviour
 {
+    public Image bild;
+    public Text name;
+    public Scrollbar progress;
+    public Text timer;
+    public Button bay;
     // Start is called before the first frame update
     void Start()
     {
