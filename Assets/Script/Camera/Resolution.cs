@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Resolution : MonoBehaviour
 {
+    [HideInInspector]
     public int X, Y;
     void Start()
     {     
