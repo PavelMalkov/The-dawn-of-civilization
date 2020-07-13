@@ -20,5 +20,9 @@ public class CloudsMove : MonoBehaviour
     {
         float RandomDiv = Random.Range(0.9f * div, div);
         transform.Translate(Move.normalized * speed / RandomDiv);
+        if (this.transform.position.x > 4)
+        {
+            Destroy(gameObject);
+        }
     }
 }

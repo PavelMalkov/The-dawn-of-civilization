@@ -22,7 +22,7 @@ public class Clouds : MonoBehaviour
     void Start()
     {
         GenerateClouds();
-        SpawnClouds();
+        StartCoroutine(SpawnCloudOne());
     }
 
     void GenerateClouds()
@@ -65,8 +65,16 @@ public class Clouds : MonoBehaviour
         // Положение объекта
         SpawnCloudsPosition = new Vector2(RandomXLeft, Random.Range(RandomYTop, RandomYDown));
         // Создание объекта
-        Instantiate(Cloud[0], SpawnCloudsPosition, Quaternion.identity);
+        Instantiate(Cloud[Random.Range(0, NumberClouds)], SpawnCloudsPosition, Quaternion.identity);
     }
     
+    IEnumerator SpawnCloudOne()
+    {
+        while (true)
+        {
+            SpawnClouds();
+            yield return new WaitForSeconds(Random.Range(20, 35));
+        }
+    }
 
 }
