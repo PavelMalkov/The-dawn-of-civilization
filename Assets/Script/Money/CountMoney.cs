@@ -8,25 +8,25 @@ public class CountMoney : MonoBehaviour
 {
     public Text MyText;
     public int count = 0;
-    //int CostOneClick;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        //CostOneClick = 1;
-        //count = int.Parse(MyText.text);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        /*count++;
-        MyText.text = count.ToString();*/
+        // Востановить данные сколько получаем монет
+        StartCoroutine(SumEn());
     }
 
     public void OnMainBildClick()
     {
-        count++;
-        MyText.text = count.ToString();
+        Data.count++;
+        MyText.text = Data.count.ToString();
+    }
+
+    IEnumerator SumEn()
+    {
+        while (true)
+        {
+            MyText.text = Data.count.ToString();
+            yield return new WaitForSeconds(1);
+        }
     }
 }

@@ -10,7 +10,6 @@ public class PositionPanel : MonoBehaviour
     public float progress;
     public float step;
     private Vector2 Move = new Vector2(0, 1);
-    string[] States = {"Open", "Close", "Stay"};
     public bool StateOpen = false;
     public bool StateCloused = false;
 
