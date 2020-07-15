@@ -9,25 +9,33 @@ public class Bild : MonoBehaviour
     public Image BildImage;
     public Image BildMain;
     public Text Name;
-    public Scrollbar Progress;
     public Text Timer;
+    public Text txtCost;
+    public Scrollbar Progress;
     public Button Bay;
     public Button LevelUp;
 
     // вот эти данные должны храниться
     public float money;
     public float time;
+    public float CostBay;
 
     private bool FactBay = false;
     // Start is called before the first frame update
     void Start()
     {
         FactBay = false;
-        if (FactBay == false) {Timer.gameObject.SetActive(false);Progress.gameObject.SetActive(false); LevelUp.gameObject.SetActive(false); BildMain.gameObject.SetActive(false); }        
+        if (FactBay == false)
+        {
+            Timer.gameObject.SetActive(false);
+            Progress.gameObject.SetActive(false);
+            LevelUp.gameObject.SetActive(false);
+            BildMain.gameObject.SetActive(false);
+            txtCost.gameObject.SetActive(false);
+        }        
     }
 
-    // добавить защиту от повторного нажатия
-    public void ClickBay(Text text)
+    /*public void ClickBay(Text text)
     {
         switch (text.text.ToString())
         {
@@ -47,6 +55,25 @@ public class Bild : MonoBehaviour
 
             default:
                 break;
+        }
+    }*/
+
+    // добавить защиту от повторного нажатия +
+    public void ClickBay()
+    {
+        if (Data.count >= CostBay)
+        {
+            Data.count -= CostBay;
+            // здесь добавить появление дома на игровом поле +
+            FactBay = true;
+            Bay.gameObject.SetActive(false);
+            LevelUp.gameObject.SetActive(true);
+            Timer.gameObject.SetActive(true);
+            Progress.gameObject.SetActive(true);
+            BildMain.gameObject.SetActive(true);
+            txtCost.gameObject.SetActive(true);
+            //StartCoroutine(SumMoney());
+            StartCoroutine(Time());
         }
     }
 
@@ -74,12 +101,12 @@ public class Bild : MonoBehaviour
             // установить прогресс
             Progress.size = (time-timelocal-1)/time; // тут всегда 0
             yield return new WaitForSeconds(1);
-            if (timelocal == 0) Data.count += money;
-            if (timelocal == 0)
+            if (timelocal == 0) 
             {
+                Data.count += money;
                 timelocal = time;
                 
-            }; // сделать сложение money с монетами;
+            }; 
         }
     }
 }

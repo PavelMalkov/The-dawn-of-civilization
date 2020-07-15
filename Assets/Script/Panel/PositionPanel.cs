@@ -10,11 +10,11 @@ public class PositionPanel : MonoBehaviour
     public float progress;
     public float step;
     private Vector2 Move = new Vector2(0, 1);
-    public bool StateOpen = false;
-    public bool StateCloused = false;
+    bool StateOpen = false;
+    bool StateCloused = false;
 
-    public Vector2 Open;
-    public Vector2 Closed;
+    Vector2 Open;
+    Vector2 Closed;
 
 
     // Start is called before the first frame update
