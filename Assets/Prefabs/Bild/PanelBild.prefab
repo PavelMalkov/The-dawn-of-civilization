@@ -373,14 +373,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44bbb09cf9e7a4f4382057f2444ed0e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BildImage: {fileID: 0}
+  BildImage: {fileID: 7355586310699872863}
   BildMain: {fileID: 0}
-  Name: {fileID: 0}
-  Timer: {fileID: 0}
-  txtCost: {fileID: 0}
-  Progress: {fileID: 0}
-  Bay: {fileID: 0}
-  LevelUp: {fileID: 0}
+  Name: {fileID: 7355586310956195206}
+  Timer: {fileID: 7355586311103183417}
+  txtCost: {fileID: 8768331978750055804}
+  Progress: {fileID: 7355586310652447873}
+  Bay: {fileID: 7355586312068011711}
+  LevelUp: {fileID: 7355586310796260109}
   money: 0
   time: 0
   CostBay: 0

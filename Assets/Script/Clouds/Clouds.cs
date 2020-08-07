@@ -10,7 +10,7 @@ public class Clouds : MonoBehaviour
     public GameObject[] Cloud = new GameObject[NumberClouds];
     // Задаваемые значения области где генерируются облака
     public float RandomYTop, RandomYDown, RandomXLeft, RandomXRight;
-    private int CountCloudsMin = 4, CountCloudsMax = 7;
+    public int CountCloudsMin, CountCloudsMax;
 
     private Vector2 SpawnCloudsPosition = new Vector2();
 

@@ -7,18 +7,15 @@ using System;
 public class CountMoney : MonoBehaviour
 {
     public Text MyText;
-    public int count = 0;
+    public float count = 0;
+    public int prev, next;
 
     private void Start()
     {
         // Востановить данные сколько получаем монет
+        count = Data.count;
+        // Старт обновления денег
         StartCoroutine(SumEn());
-    }
-
-    public void OnMainBildClick()
-    {
-        Data.count++;
-        MyText.text = Data.count.ToString();
     }
 
     IEnumerator SumEn()
@@ -26,7 +23,7 @@ public class CountMoney : MonoBehaviour
         while (true)
         {
             MyText.text = Data.count.ToString();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }
