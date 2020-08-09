@@ -11,6 +11,7 @@ public class Bild : MonoBehaviour
     public Text Name;
     public Text Timer;
     public Text txtCost;
+    public Text txtMoney;
     public Scrollbar Progress;
     public Button Bay;
     public Button LevelUp;
@@ -24,14 +25,17 @@ public class Bild : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        FactBay = false;
+        FactBay = false; // нужно будет в дальнейшем сохранять
         if (FactBay == false)
         {
             Timer.gameObject.SetActive(false);
             Progress.gameObject.SetActive(false);
             LevelUp.gameObject.SetActive(false);
             BildMain.gameObject.SetActive(false);
-            txtCost.gameObject.SetActive(false);
+            txtMoney.gameObject.SetActive(false);
+
+            txtCost.text = "Стоимость покупки " + CostBay + "$";
+            //txtCost.gameObject.SetActive(false);
         }        
     }
 
@@ -71,7 +75,9 @@ public class Bild : MonoBehaviour
             Timer.gameObject.SetActive(true);
             Progress.gameObject.SetActive(true);
             BildMain.gameObject.SetActive(true);
-            txtCost.gameObject.SetActive(true);
+            txtMoney.gameObject.SetActive(true);
+            //txtCost.gameObject.SetActive(false);
+            txtMoney.text = money + "$";
             //StartCoroutine(SumMoney());
             StartCoroutine(Time());
         }
