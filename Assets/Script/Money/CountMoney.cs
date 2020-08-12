@@ -8,7 +8,6 @@ public class CountMoney : MonoBehaviour
 {
     public Text MyText;
     public float count = 0;
-    public int prev, next;
 
     private void Start()
     {

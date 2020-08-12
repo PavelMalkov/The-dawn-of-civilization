@@ -449,17 +449,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BildImage: {fileID: 7355586310699872863}
-  BildMain: {fileID: 0}
   Name: {fileID: 7355586310956195206}
   Timer: {fileID: 7355586311103183417}
   txtCost: {fileID: 8768331978750055804}
+  txtUp: {fileID: 2859560888548489214}
   txtMoney: {fileID: 1655851851481257924}
   Progress: {fileID: 7355586310652447873}
   Bay: {fileID: 7355586312068011711}
   LevelUp: {fileID: 7355586310796260109}
+  homeName: 
+  bildimage: {fileID: 0}
   money: 0
+  CostUp: 0
+  coefficientUp: 0
+  coefficientMoney: 0
   time: 0
   CostBay: 0
+  BildMain: {fileID: 0}
 --- !u!1 &7355586310796260107
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,7 +584,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7355586310796260110}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2901282028935635204}
+        m_MethodName: ClickUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &7355586310942257700
@@ -1059,8 +1076,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u041F\u043E\u0432\u044B\u0448\u0435\u043D\u0438\u0435 \u0443\u0440\u043E\u0432\u043D\u044F\n(\u043D\u0430\u0434\u043E
-    \u0441\u0434\u0435\u043B\u0430\u0442\u044C)"
+  m_Text: 
 --- !u!1 &8252360988169482474
 GameObject:
   m_ObjectHideFlags: 0

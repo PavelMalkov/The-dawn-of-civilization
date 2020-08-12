@@ -30,16 +30,14 @@ public class EditorBildAll : Editor
                     break;
                 }
                 EditorGUILayout.EndHorizontal();
-                item.name = (Text)EditorGUILayout.ObjectField("Текстовое поле для названия здания:", item.name, typeof(Text), false);
-                item.timer = (Text)EditorGUILayout.ObjectField("Текстовое поля для времени:", item.timer, typeof(Text), false);
-                item.bildimage = (Image)EditorGUILayout.ObjectField("Изобравжение иконки дома:", item.bildimage, typeof(Image), false);
+                // надо изображение самого дома
+                item.bildimage = (Sprite)EditorGUILayout.ObjectField("Изобравжение иконки дома:", item.bildimage, typeof(Sprite), false);
+                // это положение самого дома на игровом поле
                 item.bild = (Image)EditorGUILayout.ObjectField("Дом на игровом поле:", item.bild, typeof(Image), false);
-                item.progress = (Scrollbar)EditorGUILayout.ObjectField("Полоса прогреса", item.name, typeof(Scrollbar), false);
-                item.bay = (Button)EditorGUILayout.ObjectField("Кнопка покупки здания:", item.name, typeof(Button), false);
-                item.levelup = (Button)EditorGUILayout.ObjectField("Кнопка повышения прогресса", item.name, typeof(Button), false);
-
+                item.homeName = EditorGUILayout.TextField("Название здание:", item.homeName);
                 item.money = EditorGUILayout.FloatField("Сколько денег приносит за промежуток времени:", item.money);
                 item.time = EditorGUILayout.FloatField("Сколько времени тратится:", item.time);
+                item.cost = EditorGUILayout.FloatField("Сколько стоит здание:", item.time);
 
                 EditorGUILayout.EndVertical();
             }

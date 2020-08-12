@@ -30,7 +30,7 @@ public class Building
 {
     public Text name;
     public Text timer;
-    public Image bildimage;
+    public Sprite bildimage;
     public Image bild;
     public Scrollbar progress;
     public Button bay;
@@ -38,6 +38,8 @@ public class Building
 
     public float money;
     public float time;
+    public float cost;
+    public string homeName;
 
     private bool factbay = false;
 

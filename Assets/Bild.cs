@@ -6,20 +6,38 @@ using System;
 
 public class Bild : MonoBehaviour
 {
+    [HideInInspector]
     public Image BildImage;
-    public Image BildMain;
+    [HideInInspector]
     public Text Name;
+    [HideInInspector]
     public Text Timer;
+    [HideInInspector]
     public Text txtCost;
+    [HideInInspector]
+    public Text txtUp;
+    [HideInInspector]
     public Text txtMoney;
+    [HideInInspector]
     public Scrollbar Progress;
+    [HideInInspector]
     public Button Bay;
+    [HideInInspector]
     public Button LevelUp;
 
     // вот эти данные должны храниться
+    public string homeName;
+    public Sprite bildimage;
     public float money;
+    public float CostUp; // стоимость повышения уровня
+    public float coefficientUp; // коэффициент повышения уровня
+    public float coefficientMoney; // коэффициент повышения уровня
     public float time;
     public float CostBay;
+    public Image BildMain;
+
+    private int countUp = 0;
+
 
     private bool FactBay = false;
     // Start is called before the first frame update
@@ -33,7 +51,10 @@ public class Bild : MonoBehaviour
             LevelUp.gameObject.SetActive(false);
             BildMain.gameObject.SetActive(false);
             txtMoney.gameObject.SetActive(false);
-
+            txtUp.gameObject.SetActive(false);
+            Name.text = homeName;
+            BildImage.sprite = bildimage;
+            
             txtCost.text = "Стоимость покупки " + CostBay + "$";
             //txtCost.gameObject.SetActive(false);
         }        
@@ -76,10 +97,29 @@ public class Bild : MonoBehaviour
             Progress.gameObject.SetActive(true);
             BildMain.gameObject.SetActive(true);
             txtMoney.gameObject.SetActive(true);
+            txtUp.gameObject.SetActive(true);
             //txtCost.gameObject.SetActive(false);
+            txtUp.text = "Стоимость повышения уровня " + CostUp + "$";
             txtMoney.text = money + "$";
             //StartCoroutine(SumMoney());
             StartCoroutine(Time());
+        }
+        // можно добавить что денег не достаточно
+    }
+
+    // добавить защиту от повторного нажатия +
+    public void ClickUp()
+    {
+        if (Data.count >= CostUp)
+        {
+            Data.count -= CostUp;
+
+            countUp++; // повышение уровня
+
+            money *= coefficientUp;
+            CostUp *= coefficientMoney;
+            txtMoney.text = money + "$";
+            txtUp.text = "Стоимость повышения уровня " + CostUp + "$";
         }
     }
 
@@ -115,4 +155,5 @@ public class Bild : MonoBehaviour
             }; 
         }
     }
+
 }
