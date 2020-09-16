@@ -14,6 +14,7 @@ public class PositionPanel : MonoBehaviour
 
     Vector2 Open;
     Vector2 Closed;
+    public int IdPanel; 
 
 
     // Start is called before the first frame update
@@ -35,7 +36,6 @@ public class PositionPanel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print("F");
         if (StateOpen)
         {
             if (transform.localPosition.x == Open.x && transform.localPosition.y == Open.y)
@@ -65,5 +65,12 @@ public class PositionPanel : MonoBehaviour
     public void ChancheStateOpen()
     {
         StateOpen = StateOpen ? false : true;
+        //OpenControl.Open(IdPanel);
+    }
+
+    public void ClouseOpen()
+    {
+        StateOpen = false;
+        //OpenControl.Open(IdPanel);
     }
 }
