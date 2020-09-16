@@ -21,7 +21,7 @@ public class CountMoney : MonoBehaviour
     {
         while (true)
         {
-            MyText.text = Data.count.ToString();
+            MyText.text = Data.ConvertTxt(Data.count);
             yield return new WaitForSeconds(0.1f);
         }
     }

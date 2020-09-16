@@ -6,12 +6,11 @@ using UnityEngine;
 public class PositionPanel : MonoBehaviour
 {
     int Begin, End;
-    int X, Y;
+    float X, Y;
     public float progress;
     public float step;
     private Vector2 Move = new Vector2(0, 1);
     bool StateOpen = false;
-    bool StateCloused = false;
 
     Vector2 Open;
     Vector2 Closed;
@@ -20,23 +19,27 @@ public class PositionPanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject Camera = GameObject.Find("Main Camera");
-        Resolution resolution = Camera.GetComponent<Resolution>();
-        X = resolution.X;
-        Y = resolution.Y;
+        RectTransform Panel = GetComponent<RectTransform>(); ;
+        X = Data.X;
+        Y = Data.Y;
+
+        RectTransformExtensions.SetTop(Panel,Y / 2);
+        print(X + " " + Y);
+
         Closed = new Vector2(0,-Y);
         Open = new Vector2(0, -Y/2);
         transform.localPosition = Closed;
+        
     }
     
     // Update is called once per frame
     void Update()
     {
+        print("F");
         if (StateOpen)
         {
             if (transform.localPosition.x == Open.x && transform.localPosition.y == Open.y)
             {
-                //StateOpen = false;
                 progress = 0;
             }
             else
@@ -49,7 +52,6 @@ public class PositionPanel : MonoBehaviour
         {
             if (transform.localPosition.x == Closed.x && transform.localPosition.y == Closed.y)
             {
-                //StateCloused = false;
                 progress = 0;
             }
             else

@@ -7,10 +7,12 @@ public class Resolution : MonoBehaviour
 {
     [HideInInspector]
     public int X, Y;
-    void Start()
+    void Awake()
     {     
-       X = Screen.width;
-       Y = Screen.height;
-       print(X + " " + Y);
+        X = Screen.width;
+        Y = Screen.height;
+        print(X + " " + Y);
+        Data.X = X;
+        Data.Y = Y;
     }
 }

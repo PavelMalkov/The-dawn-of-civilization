@@ -6,6 +6,7 @@ using System;
 
 public class Bild : MonoBehaviour
 {
+    // Это объекты которые изменяются и привязываются в самом префабе поэтому они скрыты
     [HideInInspector]
     public Image BildImage;
     [HideInInspector]
@@ -40,12 +41,19 @@ public class Bild : MonoBehaviour
 
 
     private bool FactBay = false;
-    // Start is called before the first frame update
+    
+
     void Start()
     {
         FactBay = false; // нужно будет в дальнейшем сохранять
         if (FactBay == false)
         {
+            RectTransform a = this.GetComponent<RectTransform>();
+            float SizeX = Data.X * 0.9f; 
+            float SizeY = SizeX / 5.7857f; 
+            a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
+
+
             Timer.gameObject.SetActive(false);
             Progress.gameObject.SetActive(false);
             LevelUp.gameObject.SetActive(false);
@@ -55,41 +63,16 @@ public class Bild : MonoBehaviour
             Name.text = homeName;
             BildImage.sprite = bildimage;
             
-            txtCost.text = "Стоимость покупки " + CostBay + "$";
+            txtCost.text = "Стоимость покупки " + Data.ConvertTxt(CostBay) + "$";
             //txtCost.gameObject.SetActive(false);
         }        
     }
 
-    /*public void ClickBay(Text text)
-    {
-        switch (text.text.ToString())
-        {
-            case "Дом":
-                {
-                    // здесь добавить появление дома на игровом поле
-                    FactBay = true;
-                    Bay.gameObject.SetActive(false);
-                    LevelUp.gameObject.SetActive(true);
-                    Timer.gameObject.SetActive(true);
-                    Progress.gameObject.SetActive(true);
-                    BildMain.gameObject.SetActive(true);
-                    //StartCoroutine(SumMoney());
-                    StartCoroutine(Time());
-                    break;
-                }
-
-            default:
-                break;
-        }
-    }*/
-
-    // добавить защиту от повторного нажатия +
     public void ClickBay()
     {
         if (Data.count >= CostBay)
         {
             Data.count -= CostBay;
-            // здесь добавить появление дома на игровом поле +
             FactBay = true;
             Bay.gameObject.SetActive(false);
             LevelUp.gameObject.SetActive(true);
@@ -98,10 +81,8 @@ public class Bild : MonoBehaviour
             BildMain.gameObject.SetActive(true);
             txtMoney.gameObject.SetActive(true);
             txtUp.gameObject.SetActive(true);
-            //txtCost.gameObject.SetActive(false);
-            txtUp.text = "Стоимость повышения уровня " + CostUp + "$";
-            txtMoney.text = money + "$";
-            //StartCoroutine(SumMoney());
+            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(CostUp) + "$";
+            txtMoney.text = Data.ConvertTxt(money) + "$";
             StartCoroutine(Time());
         }
         // можно добавить что денег не достаточно
@@ -118,8 +99,8 @@ public class Bild : MonoBehaviour
 
             money *= coefficientUp;
             CostUp *= coefficientMoney;
-            txtMoney.text = money + "$";
-            txtUp.text = "Стоимость повышения уровня " + CostUp + "$";
+            txtMoney.text = Data.ConvertTxt(money) + "$";
+            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(CostUp) + "$";
         }
     }
 
