@@ -6,7 +6,6 @@ using System;
 
 public class Resolution : MonoBehaviour
 {
-    private Save sv = new Save();
 
     [HideInInspector]
     public float X, Y;
@@ -17,43 +16,15 @@ public class Resolution : MonoBehaviour
         print(X + " " + Y);
         Data.X = X;
         Data.Y = Y;
-        if (PlayerPrefs.HasKey("SV"))
-        {
-            sv = JsonUtility.FromJson<Save>(PlayerPrefs.GetString("SV"));
-            Data.count = sv.score;
-        }
-        else
-        {
-            print("Awake 1 раз в сохранении");
-        }
-    }
-
-    private void OnApplicationPause() // работает при запуске
-    {
-        sv.score = Data.count;
-        PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
-    }
-
-    private void OnApplicationQuit() // сохраняет но только когда выключено
-    {
-        sv.score = Data.count;
-        PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
     }
 }
 
-[Serializable]
-public class Save
-{
-    public float score;
-
-    //Здесь необходимо перести все данные которые мы хотим сохранить
-}
-
+// Этот класс статический может хранить в себе значения
 public static class Data
 {
-    public static float count = 0;
+    public static float CountMoney = 0;
+    public static float BildCount = 0; // количество зданий
     public static float X, Y;
-
     public static string ConvertTxt(float x)
     {
         string str1 = ""; // это строка чисел
@@ -76,5 +47,9 @@ public static class Data
         }
         str1 = x.ToString("####0.##") + str2;
         return str1;
-    }
+    } 
 }
+
+
+
+

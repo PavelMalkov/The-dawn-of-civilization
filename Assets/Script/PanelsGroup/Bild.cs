@@ -27,114 +27,144 @@ public class Bild : MonoBehaviour
     public Button LevelUp;
 
     // вот эти данные должны храниться
-    public string homeName;
-    public Sprite bildimage;
-    public float money;
-    public float CostUp; // стоимость повышения уровня
-    public float coefficientUp; // коэффициент повышения уровня
-    public float coefficientMoney; // коэффициент повышения уровня
-    public float time;
-    public float CostBay;
-    public Image BildMain;
+    public int Id; // номер здания
+    //private string homeName; //название здания
+    //private Sprite bildimage; // его изображение
+    //private float money; // сколько денег здание приносит
+    //private float CostUp; // стоимость повышения уровня
+    //private float coefficientUp; // коэффициент повышения уровня
+    //private float coefficientMoney; // коэффициент повышения уровня
+    //private float time; // сколько необходимо времени
+    //private float CostBay; // Стоимость покупки
+    public Image BildMain; // Изображение дома на игровом поле
+    //private int countUp = 0; // какой уровень
+    //private bool FactBay = false; // факт покупки
+    //private float timelocal; // сколько времени прошло
+    /*
+    Сохраняемые данные: 
+    FactBay факт покупки
+    countUp уровень
+    CostUp стоимость повышения
+    money количество денез за время
+    time это общее время время 
+    timelocal это сколько времени прошло
+    */
 
-    private int countUp = 0;
+    Building ThisBild;
 
-
-    private bool FactBay = false;
-    
 
     void Start()
     {
-        FactBay = false; // нужно будет в дальнейшем сохранять
-        if (FactBay == false)
+        print(Id);
+        ThisBild = BildAll.GetBildSetting(Id);
+
+        RectTransform a = this.GetComponent<RectTransform>();
+        float SizeX = Data.X * 0.9f;
+        float SizeY = SizeX / 5.7857f;
+        a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
+
+        if (ThisBild.FactBay == false) // здание еще не куплено
         {
-            RectTransform a = this.GetComponent<RectTransform>();
-            float SizeX = Data.X * 0.9f; 
-            float SizeY = SizeX / 5.7857f; 
-            a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
-
-
-            Timer.gameObject.SetActive(false);
-            Progress.gameObject.SetActive(false);
-            LevelUp.gameObject.SetActive(false);
-            BildMain.gameObject.SetActive(false);
-            txtMoney.gameObject.SetActive(false);
-            txtUp.gameObject.SetActive(false);
-            Name.text = homeName;
-            BildImage.sprite = bildimage;
-            
-            txtCost.text = "Стоимость покупки " + Data.ConvertTxt(CostBay) + "$";
-            //txtCost.gameObject.SetActive(false);
-        }        
+            NotBayView();
+            Name.text = ThisBild.homeName;
+            BildImage.sprite = ThisBild.bildimage;
+            txtCost.text = "Стоимость покупки " + Data.ConvertTxt(ThisBild.CostBay) + "$";
+        }
+        else // здание уже куплено
+        {
+            bayView(); 
+            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
+            txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
+            StartCoroutine(Time());
+        }
     }
 
     public void ClickBay()
     {
-        if (Data.count >= CostBay)
+        if (Data.CountMoney >= ThisBild.CostBay)
         {
-            Data.count -= CostBay;
-            FactBay = true;
-            Bay.gameObject.SetActive(false);
-            LevelUp.gameObject.SetActive(true);
-            Timer.gameObject.SetActive(true);
-            Progress.gameObject.SetActive(true);
-            BildMain.gameObject.SetActive(true);
-            txtMoney.gameObject.SetActive(true);
-            txtUp.gameObject.SetActive(true);
-            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(CostUp) + "$";
-            txtMoney.text = Data.ConvertTxt(money) + "$";
+            Data.CountMoney -= ThisBild.CostBay;
+            ThisBild.FactBay = true;
+
+            bayView();
+            // прогресс строительства (количество домов)
+            Data.BildCount++;
+            // повышение уровня
+            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
+            txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
             StartCoroutine(Time());
         }
         // можно добавить что денег не достаточно
     }
 
+    private void bayView()
+    {
+        Bay.gameObject.SetActive(false);
+        LevelUp.gameObject.SetActive(true);
+        Timer.gameObject.SetActive(true);
+        Progress.gameObject.SetActive(true);
+        BildMain.gameObject.SetActive(true);
+        txtMoney.gameObject.SetActive(true);
+        txtUp.gameObject.SetActive(true);
+        Bay.gameObject.SetActive(false);
+    }
+
+    private void NotBayView()
+    {
+        Timer.gameObject.SetActive(false);
+        Progress.gameObject.SetActive(false);
+        LevelUp.gameObject.SetActive(false);
+        BildMain.gameObject.SetActive(false);
+        txtMoney.gameObject.SetActive(false);
+        txtUp.gameObject.SetActive(false);
+    }
+    
     // добавить защиту от повторного нажатия +
     public void ClickUp()
     {
-        if (Data.count >= CostUp)
+        if (Data.CountMoney >= ThisBild.CostUp)
         {
-            Data.count -= CostUp;
+            Data.CountMoney -= ThisBild.CostUp;
 
-            countUp++; // повышение уровня
+            ThisBild.countUp++; // повышение уровня
 
-            money *= coefficientUp;
-            CostUp *= coefficientMoney;
-            txtMoney.text = Data.ConvertTxt(money) + "$";
-            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(CostUp) + "$";
+            ThisBild.Money *= ThisBild.coefficientUp;
+            ThisBild.CostUp *= ThisBild.coefficientMoney;
+            txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
+            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
         }
     }
 
+
     IEnumerator Time()
     {
-        float timelocal = time;
-        int sec, min, hour;
-        int secAll, minAll, hourAll;
+        if (ThisBild.timelocal == 0) ThisBild.timelocal = ThisBild.time;
+        int sec, min; //hour;
+        int secAll, minAll;// hourAll;
         //hour = (int)TimeSpan.FromSeconds(time).TotalHours; // 0,0166666666666667
         
         while (true)
         {
             // установить таймер
-            minAll = (int)TimeSpan.FromSeconds(time).TotalMinutes; // 1
-            secAll = (int)TimeSpan.FromSeconds(time - (minAll * 60)).TotalSeconds; // 60
+            minAll = (int)TimeSpan.FromSeconds(ThisBild.time).TotalMinutes; // 1
+            secAll = (int)TimeSpan.FromSeconds(ThisBild.time - (minAll * 60)).TotalSeconds; // 60
 
-            min = (int)TimeSpan.FromSeconds(timelocal).TotalMinutes; // 1
-            sec = (int)TimeSpan.FromSeconds(timelocal - (min * 60)).TotalSeconds; // 60
-            timelocal -= 1;
+            min = (int)TimeSpan.FromSeconds(ThisBild.timelocal).TotalMinutes; // 1
+            sec = (int)TimeSpan.FromSeconds(ThisBild.timelocal - (min * 60)).TotalSeconds; // 60
+            ThisBild.timelocal -= 1;
 
             string res = String.Format("{0:d2}:{1:d2}/({2:d2}:{3:d2})", min,sec,minAll,secAll);
             
             Timer.text = res;
 
             // установить прогресс
-            Progress.size = (time-timelocal-1)/time; // тут всегда 0
+            Progress.size = (ThisBild.time - ThisBild.timelocal -1)/ ThisBild.time; // тут всегда 0
             yield return new WaitForSeconds(1);
-            if (timelocal == 0) 
+            if (ThisBild.timelocal == 0) 
             {
-                Data.count += money;
-                timelocal = time;
-                
+                Data.CountMoney += ThisBild.Money;
+                ThisBild.timelocal = ThisBild.time;
             }; 
         }
     }
-
 }

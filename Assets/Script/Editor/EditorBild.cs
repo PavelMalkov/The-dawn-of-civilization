@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 
 //[CustomEditor(typeof(Bild))]
-public class EditorBild : Editor
+/*public class EditorBild : Editor
 {
     private Bild MyBild;
 
@@ -39,10 +39,4 @@ public class EditorBild : Editor
         EditorUtility.SetDirty(obj);
         EditorSceneManager.MarkSceneDirty(obj.scene);
     }
-}
-
-//BildAll
-/*
-
-
-*/
+}*/
