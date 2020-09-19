@@ -9,7 +9,7 @@ public class Bild : MonoBehaviour
     // Это объекты которые изменяются и привязываются в самом префабе поэтому они скрыты
     [HideInInspector]
     public Image BildImage;
-    [HideInInspector]
+    //[HideInInspector]
     public Text Name;
     [HideInInspector]
     public Text Timer;
@@ -63,6 +63,8 @@ public class Bild : MonoBehaviour
         float SizeY = SizeX / 5.7857f;
         a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
 
+        BildImage.sprite = ThisBild.bildimage;
+
         if (ThisBild.FactBay == false) // здание еще не куплено
         {
             NotBayView();
@@ -72,7 +74,8 @@ public class Bild : MonoBehaviour
         }
         else // здание уже куплено
         {
-            bayView(); 
+            bayView();
+            Name.text = ThisBild.homeName + "";
             txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
             txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
             StartCoroutine(Time());
@@ -141,7 +144,7 @@ public class Bild : MonoBehaviour
         if (ThisBild.timelocal == 0) ThisBild.timelocal = ThisBild.time;
         int sec, min; //hour;
         int secAll, minAll;// hourAll;
-        //hour = (int)TimeSpan.FromSeconds(time).TotalHours; // 0,0166666666666667
+        //hour = (int)TimeSpan.FromSeconds(time).TotalHours; 
         
         while (true)
         {

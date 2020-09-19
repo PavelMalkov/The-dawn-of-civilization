@@ -8,10 +8,12 @@ using System.Threading;
 public class BildAll : MonoBehaviour
 {
     public float CoefTimeOut;
-    private BildSave svBild;
+    private BildSave svBild = new BildSave();
     //public GameObject Exempl; // это префаб куда мы будем записывать наши значения
     public List<Building> ManyBuildingLocal; // это список наших домов
     public static List<Building> ManyBuilding; // это список наших домов (для связи с другими скриптами)
+
+    public bool ResetSave;
 
     static BildAll()
     {
@@ -50,7 +52,6 @@ public class BildAll : MonoBehaviour
 
     private void Load()
     {
-
         if (PlayerPrefs.HasKey("SVBild"))
         {
             svBild = JsonUtility.FromJson<BildSave>(PlayerPrefs.GetString("SVBild"));
@@ -73,6 +74,7 @@ public class BildAll : MonoBehaviour
             }
         }
         if (svBild.ManyBuildingLocal.Count == 0) SetStart();
+        if (ResetSave) SetStartRestart();
     }
 
     private void Save()
@@ -153,6 +155,7 @@ public class BildSave
     //public float MoneyPerSecond; // Это сколько денег в секунду мы зарабатываем (скорость при выключенной игре сделаем в 50 раз медленнее)
     public string DateLast;
     public List<Building> ManyBuildingLocal; // это список наших домов
+    public BildSave() { CountMoney = 0;}
 }
 
 

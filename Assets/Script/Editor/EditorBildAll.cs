@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using UnityEditor.SceneManagement;
+
 
 [CustomEditor(typeof(BildAll))]
 public class EditorBildAll : Editor
@@ -19,6 +19,7 @@ public class EditorBildAll : Editor
     public override void OnInspectorGUI()
     {
         MyBild.CoefTimeOut = EditorGUILayout.FloatField("Коэфициент (во сколько раз мы уменьшаем прибыль при офлайне игрока)", MyBild.CoefTimeOut);
+        MyBild.ResetSave = EditorGUILayout.Toggle("Перезагрузить данные:", MyBild.ResetSave);
         //MyBild.Exempl = (GameObject)EditorGUILayout.ObjectField("Префаб в который добавляем данные:", MyBild.Exempl, typeof(GameObject), false);
         if (MyBild.ManyBuildingLocal.Count > 0)
         {
