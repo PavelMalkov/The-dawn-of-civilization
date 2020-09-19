@@ -218,9 +218,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4c7d4bc7f13832646bee95cc0b11563e, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -324,6 +324,7 @@ MonoBehaviour:
   About: {fileID: 1655851851481257924}
   txtCost: {fileID: 8768331978750055804}
   Bay: {fileID: 7355586312068011711}
+  Id: 0
   ReseachName: "\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0443\u0441\u043A\u043E\u0440\u0435\u043D\u0438\u0435"
   ReseachAbout: "\u0411\u043E\u043D\u0443\u0441: "
   ReseachImage: {fileID: 0}
@@ -526,7 +527,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7451187917218642074}
         m_MethodName: ClickBay
         m_Mode: 1
         m_Arguments:

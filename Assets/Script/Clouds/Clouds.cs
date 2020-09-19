@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class Clouds : MonoBehaviour
 {
-    //Количество разных облаков
-    const int NumberClouds = 6;
     //Массив облаков
-    public GameObject[] Cloud = new GameObject[NumberClouds];
+    [Tooltip("Это генерируеммые облака")]
+    public GameObject[] Cloud;
     // Задаваемые значения области где генерируются облака
     public float RandomYTop, RandomYDown, RandomXLeft, RandomXRight;
     // Колич
@@ -35,7 +34,7 @@ public class Clouds : MonoBehaviour
         CountClouds = Random.Range(CountCloudsMin, CountCloudsMax);
         for (int i = 0; i < CountClouds; ++i)
         {
-            GenerateNumber = Random.Range(0, NumberClouds);
+            GenerateNumber = Random.Range(0, Cloud.Length);
             SpawnClouds(GenerateNumber, Start);
             Start += step;
         }
@@ -66,7 +65,7 @@ public class Clouds : MonoBehaviour
         // Положение объекта
         SpawnCloudsPosition = new Vector2(RandomXLeft, Random.Range(RandomYTop, RandomYDown));
         // Создание объекта
-        Instantiate(Cloud[Random.Range(0, NumberClouds)], SpawnCloudsPosition, Quaternion.identity);
+        Instantiate(Cloud[Random.Range(0, Cloud.Length)], SpawnCloudsPosition, Quaternion.identity);
     }
     
     IEnumerator SpawnCloudOne()

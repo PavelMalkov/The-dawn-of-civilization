@@ -8,6 +8,6 @@ public class ClickBild : MonoBehaviour
 
     public void OnMainBildClick()
     {
-        Data.count += OneClickCost;
+        Data.CountMoney += OneClickCost;
     }
 }

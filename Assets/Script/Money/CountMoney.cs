@@ -12,7 +12,7 @@ public class CountMoney : MonoBehaviour
     private void Start()
     {
         // Востановить данные сколько получаем монет
-        count = Data.count;
+        count = Data.CountMoney;
         // Старт обновления денег
         StartCoroutine(SumEn());
     }
@@ -21,7 +21,7 @@ public class CountMoney : MonoBehaviour
     {
         while (true)
         {
-            MyText.text = Data.ConvertTxt(Data.count);
+            MyText.text = Data.ConvertTxt(Data.CountMoney);
             yield return new WaitForSeconds(0.1f);
         }
     }

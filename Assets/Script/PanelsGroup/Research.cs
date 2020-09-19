@@ -18,15 +18,12 @@ public class Research : MonoBehaviour
     [HideInInspector]
     public Button Bay;
 
-
     // вот эти данные должны храниться
+    public int Id;
     public string ReseachName;
     public string ReseachAbout;
     public Sprite ReseachImage;
     public float CostBay;
-
-    private int countUp = 0;
-
 
     private bool FactBay = false;
 
@@ -34,30 +31,39 @@ public class Research : MonoBehaviour
     void Start()
     {
         FactBay = false; // нужно будет в дальнейшем сохранять
+
+        RectTransform a = this.GetComponent<RectTransform>();
+        float SizeX = Data.X * 0.9f;
+        float SizeY = SizeX / 5.7857f;
+        a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
+
+        Name.text = ReseachName;
+        About.text = ReseachAbout;
+        BildImage.sprite = ReseachImage;
+
         if (FactBay == false)
         {
-            RectTransform a = this.GetComponent<RectTransform>();
-            float SizeX = Data.X * 0.9f;
-            float SizeY = SizeX / 5.7857f;
-            a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
-
-            Name.text = ReseachName;
-            About.text = ReseachAbout;
-            BildImage.sprite = ReseachImage;
-
-            txtCost.text = "Стоимость покупки " + Data.ConvertTxt(CostBay) + "$";
+            txtCost.text = "Стоимость покупки ускорения " + Data.ConvertTxt(CostBay) + "$";
             //txtCost.gameObject.SetActive(false);
+        }
+        else
+        {
+            txtCost.text = "Ускорение приобретено$";
         }
     }
 
     // добавить защиту от повторного нажатия +
     public void ClickBay()
     {
-        if (Data.count >= CostBay)
+        if (Data.CountMoney >= CostBay)
         {
-            Data.count -= CostBay;
+            Data.CountMoney -= CostBay;
             FactBay = true;
-            Bay.gameObject.SetActive(false);
+            txtCost.text = "Ускорение приобретено";
+
+            //само ускорение
+            BildAll.ManyBuilding[Id].time /= 2;
+            BildAll.ManyBuilding[Id].timelocal = (float)Math.Round(BildAll.ManyBuilding[Id].timelocal / 2);
         }
         // можно добавить что денег не достаточно
     }
