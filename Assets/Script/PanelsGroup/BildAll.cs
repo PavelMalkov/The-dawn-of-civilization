@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using System;
 using System.Threading;
-//using System;
+using System.IO;
+//using Newtonsoft.Json;
 
 
 public class BildAll : MonoBehaviour
@@ -48,10 +50,11 @@ public class BildAll : MonoBehaviour
         return BildAll.ManyBuilding[ID];
     }
 
-    
 
-    private void Load()
+
+    /*private void Load()
     {
+
         if (PlayerPrefs.HasKey("SVBild"))
         {
             svBild = JsonUtility.FromJson<BildSave>(PlayerPrefs.GetString("SVBild"));
@@ -75,9 +78,9 @@ public class BildAll : MonoBehaviour
         }
         if (svBild.ManyBuildingLocal.Count == 0) SetStart();
         if (ResetSave) SetStartRestart();
-    }
+    }*/
 
-    private void Save()
+    /*private void Save()
     {
         print("Сохранение");
         // сохранение прогресса
@@ -85,7 +88,17 @@ public class BildAll : MonoBehaviour
         svBild.CountMoney = Data.CountMoney;
         svBild.DateLast = DateTime.Now.ToString();
         PlayerPrefs.SetString("SVBild", JsonUtility.ToJson(svBild));
-    }
+
+        string json;
+
+        using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
+        {
+            json = svBild.ToString();
+            //json = JsonConvert.SerializeObject(svBild);
+            //JsonUtility.FromJson<BildSave>(fs, svBild);
+            print(json);
+        }
+    }*/
 
     private void SetStart() // Добавление начальных параметров игры 
     {
@@ -114,13 +127,17 @@ public class BildAll : MonoBehaviour
     private void OnApplicationPause(bool pause)
     {
         print("Пауза приложения");
-        if (pause) Save();
-        else Load();
+        if (pause) SaveGameData();
+        else LoadGameData();
+
+        /*if (pause) Save();
+        else Load();*/
     }
 
     private void OnApplicationQuit() // сохраняет но только когда выключено
     {
-        Save();
+        SaveGameData();
+        /*Save();*/
         print("Выход из приложения");
     }
 
@@ -130,9 +147,135 @@ public class BildAll : MonoBehaviour
         float m1 = 0;
         foreach (Building item in BildAll.ManyBuilding)
         {
-            if(item.FactBay) m1 += item.Money / item.time;
+            if (item.FactBay) m1 += item.Money / item.time;
         }
         return m1;
+    }
+
+    // тестовые данные
+    string filePath = "";
+    string dataAsJson;
+    BildSave loadedData;
+
+    // тестовые Загрузка
+    private void LoadGameData()
+    {
+        /*string filePath = "";
+        string dataAsJson;*/
+
+#if UNITY_EDITOR
+        filePath = Application.dataPath + "/StreamingAssets/data.json";
+        /*if (File.Exists(filePath) && File.ReadAllText(filePath) != "")
+        {
+            dataAsJson = File.ReadAllText(filePath);
+            loadedData = JsonUtility.FromJson<BildSave>(dataAsJson);
+
+            print("Проверочное");
+
+            float timeSecond, timeMin, moneySecond; // минуты это + часы + дни + года
+
+            BildAll.ManyBuilding = loadedData.ManyBuildingLocal;
+            Data.CountMoney = loadedData.CountMoney;
+
+            TimeSpan tm;
+            if (loadedData.DateLast != null)
+            {
+                tm = DateTime.Now - DateTime.Parse(loadedData.DateLast);
+                timeMin = tm.Minutes + tm.Hours * 60 + tm.Days * 60 * 24;
+                timeSecond = tm.Seconds;
+                moneySecond = MoneyPerSecond();
+                print("Зарабатываем " + moneySecond + " в секунду");
+                print("Заработали во время отсутствия: " + (moneySecond * timeSecond + moneySecond * timeMin * 60) / CoefTimeOut);
+            }
+        }
+        else
+        {*/
+            Debug.LogError("Can not load game data!");
+            SetStart();
+        //}
+#elif UNITY_ANDROID
+        filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
+        StartCoroutine(GetDataInAndroid(filePath));
+#endif
+    }
+
+    //тестовое Загрузка
+    IEnumerator GetDataInAndroid(string url)
+    {
+        WWW www = new WWW(url);
+        yield return www;
+        if (www.text != null)
+        {
+            string dataAsJson = www.text;
+            loadedData = JsonUtility.FromJson<BildSave>(dataAsJson);
+
+            print("Проверочное");
+
+            float timeSecond, timeMin, moneySecond; // минуты это + часы + дни + года
+
+            BildAll.ManyBuilding = loadedData.ManyBuildingLocal;
+            Data.CountMoney = loadedData.CountMoney;
+
+            TimeSpan tm;
+            if (loadedData.DateLast != null)
+            {
+                tm = DateTime.Now - DateTime.Parse(loadedData.DateLast);
+                timeMin = tm.Minutes + tm.Hours * 60 + tm.Days * 60 * 24;
+                timeSecond = tm.Seconds;
+                moneySecond = MoneyPerSecond();
+                print("Зарабатываем " + moneySecond + " в секунду");
+                print("Заработали во время отсутствия: " + (moneySecond * timeSecond + moneySecond * timeMin * 60) / CoefTimeOut);
+            }
+        }
+        else
+        {
+            Debug.LogError("Can not load game data!");
+        }
+    }
+
+    // тестовые Сохранение
+    private void SaveGameData()
+    {
+#if UNITY_EDITOR
+        print("Сохранение");
+        // сохранение прогресса
+
+        dataAsJson = File.ReadAllText(filePath);
+        loadedData = JsonUtility.FromJson<BildSave>(dataAsJson);
+
+        loadedData.ManyBuildingLocal = BildAll.ManyBuilding;
+        loadedData.CountMoney = Data.CountMoney;
+        loadedData.DateLast = DateTime.Now.ToString();
+
+        if (File.Exists(filePath))
+        {
+            File.WriteAllText(filePath, JsonUtility.ToJson(loadedData));
+        }
+        else
+        {
+            Debug.LogError("Can not save game data!");
+        }
+#elif UNITY_ANDROID
+        filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
+        StartCoroutine(SetDataInAndroid(filePath));
+#endif
+    }
+
+    // тестовое Сохранение
+    private void SetDataInAndroid(string url)
+    {
+        loadedData.ManyBuildingLocal = BildAll.ManyBuilding;
+        loadedData.CountMoney = Data.CountMoney;
+        loadedData.DateLast = DateTime.Now.ToString();
+
+        if (File.Exists(url))
+        {
+            File.WriteAllText(url, JsonUtility.ToJson(loadedData));
+        }
+        else
+        {
+            Debug.LogError("Can not save game data!");
+        }
     }
 
     // добавить удаление прогресса
@@ -149,26 +292,26 @@ public class BildAll : MonoBehaviour
 }
 
 [Serializable]
-public class BildSave
-{
-    public float CountMoney;
-    //public float MoneyPerSecond; // Это сколько денег в секунду мы зарабатываем (скорость при выключенной игре сделаем в 50 раз медленнее)
-    public string DateLast;
-    public List<Building> ManyBuildingLocal; // это список наших домов
-    public BildSave() { CountMoney = 0;}
-}
+    public class BildSave
+    {
+        public float CountMoney;
+        //public float MoneyPerSecond; // Это сколько денег в секунду мы зарабатываем (скорость при выключенной игре сделаем в 50 раз медленнее)
+        public string DateLast;
+        public List<Building> ManyBuildingLocal; // это список наших домов
+        public BildSave() { CountMoney = 0; }
+    }
 
 
 
-/*
-Сохраняемые данные:
-FactBay факт покупки
-countUp уровень
-CostUp стоимость повышения
-money количество денез за время
-time это общее время время
-timelocal это сколько времени прошло
-*/
+    /*
+    Сохраняемые данные:
+    FactBay факт покупки
+    countUp уровень
+    CostUp стоимость повышения
+    money количество денез за время
+    time это общее время время
+    timelocal это сколько времени прошло
+    */
 
 [Serializable]
 public class Building
@@ -204,7 +347,7 @@ public class Building
         _coefficientUp = coefficientUp; _coefficientMoney = coefficientMoney;
     }
 
-    public void getbildList(int _Id,bool _FactBay, int _countUp, float _CostUp, float _money, float _time, float _timelocal, string _homeName, float _CostBay, Sprite _bildimage,
+    public void getbildList(int _Id, bool _FactBay, int _countUp, float _CostUp, float _money, float _time, float _timelocal, string _homeName, float _CostBay, Sprite _bildimage,
     float _coefficientUp, float _coefficientMoney)
     {
         _Id = Id;

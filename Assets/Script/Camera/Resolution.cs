@@ -16,6 +16,7 @@ public class Resolution : MonoBehaviour
         print(X + " " + Y);
         Data.X = X;
         Data.Y = Y;
+        Debug.Log(Application.persistentDataPath);
     }
 }
 
