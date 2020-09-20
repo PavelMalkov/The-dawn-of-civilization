@@ -1,7 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using System;
+using System.Threading;
+using System.IO;
 
 
 public class Resolution : MonoBehaviour
@@ -21,34 +23,27 @@ public class Resolution : MonoBehaviour
 }
 
 // Этот класс статический может хранить в себе значения он используется еще для конвертации чисел и их формата вывода
-public static class Data
+public class Data
 {
+    private static string[] teams = { "","K", "M", "B", "A", "Ax", "Ac" };
+
     public static float CountMoney = 0;
     public static float BildCount = 0; // количество зданий
     public static float X, Y;
+
     public static string ConvertTxt(float x)
     {
-        string str1 = ""; // это строка чисел
-        string str2 = ""; // это строка с буквой
 
-        if (x >= 1000)
+        int count = 0;
+        float buf = x;
+        while (buf > 1000)
         {
-            x /= 1000;
-            str2 = "К";
+            count++;
+            buf /= 1000;
         }
-        if (x >= 1000)
-        {
-            x /= 1000;
-            str2 = "M";
-        }
-        if (x >= 1000)
-        {
-            x /= 1000;
-            str2 = "B";
-        }
-        str1 = x.ToString("####0.#") + str2;
-        return str1;
-    } 
+        string str1 = (buf.ToString("####0.##") + Data.teams[count]);
+        return str1; // значение teams
+    }
 }
 
 

@@ -3060,7 +3060,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c33659c15fcacff4086eeb84bb09d2f5, type: 3}
   m_Name: 
@@ -3165,6 +3165,7 @@ MonoBehaviour:
     Money: 30
     time: 10
     timelocal: 0
+  ResetSave: 0
 --- !u!1 &523687570
 GameObject:
   m_ObjectHideFlags: 0
@@ -6269,8 +6270,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 33055652}
   m_HandleRect: {fileID: 33055650}
   m_Direction: 2
-  m_Value: 0.5
-  m_Size: 0.5491991
+  m_Value: 0.49999994
+  m_Size: 0.27459955
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7733,7 +7734,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!1001 &1577091217
 PrefabInstance:
@@ -10563,6 +10564,11 @@ PrefabInstance:
     - target: {fileID: 4939445115273082376, guid: 7706f35e638c69d4199f4c74e9946f20,
         type: 3}
       propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044910627212964913, guid: 7706f35e638c69d4199f4c74e9946f20,
+        type: 3}
+      propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

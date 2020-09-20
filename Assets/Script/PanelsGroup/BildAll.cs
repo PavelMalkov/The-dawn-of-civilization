@@ -4,18 +4,19 @@ using System.Collections;
 using System;
 using System.Threading;
 using System.IO;
-//using Newtonsoft.Json;
-
+using System.Text;
 
 public class BildAll : MonoBehaviour
 {
     public float CoefTimeOut;
-    private BildSave svBild = new BildSave();
-    //public GameObject Exempl; // это префаб куда мы будем записывать наши значения
     public List<Building> ManyBuildingLocal; // это список наших домов
     public static List<Building> ManyBuilding; // это список наших домов (для связи с другими скриптами)
 
     public bool ResetSave;
+
+    string filePath = ""; // путь
+    string dataAsJson; // хранящиеся данные
+    BildSave loadedData; // обращение к ним
 
     static BildAll()
     {
@@ -24,11 +25,14 @@ public class BildAll : MonoBehaviour
 
     private void Awake()
     {
-        // проверка времени по интернету
-        var dateTime = CheckGlobalTime();
-        Debug.Log("Global UTC time: " + dateTime);
-
+        // проверка времени по интернету очень медленная так что надо что то делать
+        //var dateTime = CheckGlobalTime();
+        //Debug.Log("Global UTC time: " + dateTime);
         //делаем проверку совподают ли локальное и интернет время Пока не делаю незнаю как пользователю объеснить
+
+        print(float.MaxValue);
+        print(Data.ConvertTxt(0));
+        LoadGameData();
     }
 
     DateTime CheckGlobalTime()
@@ -50,66 +54,16 @@ public class BildAll : MonoBehaviour
         return BildAll.ManyBuilding[ID];
     }
 
-
-
-    /*private void Load()
-    {
-
-        if (PlayerPrefs.HasKey("SVBild"))
-        {
-            svBild = JsonUtility.FromJson<BildSave>(PlayerPrefs.GetString("SVBild"));
-            print("Загрузка");
-
-            float timeSecond, timeMin, moneySecond; // минуты это + часы + дни + года
-
-            BildAll.ManyBuilding = svBild.ManyBuildingLocal;
-            Data.CountMoney = svBild.CountMoney;
-
-            TimeSpan tm;
-            if (svBild.DateLast != null)
-            {
-                tm = DateTime.Now - DateTime.Parse(svBild.DateLast);
-                timeMin = tm.Minutes + tm.Hours * 60 + tm.Days * 60 * 24;
-                timeSecond = tm.Seconds;
-                moneySecond = MoneyPerSecond();
-                print("Зарабатываем " + moneySecond + " в секунду");
-                print("Заработали во время отсутствия: " + (moneySecond * timeSecond + moneySecond * timeMin * 60) / CoefTimeOut);
-            }
-        }
-        if (svBild.ManyBuildingLocal.Count == 0) SetStart();
-        if (ResetSave) SetStartRestart();
-    }*/
-
-    /*private void Save()
-    {
-        print("Сохранение");
-        // сохранение прогресса
-        svBild.ManyBuildingLocal = BildAll.ManyBuilding;
-        svBild.CountMoney = Data.CountMoney;
-        svBild.DateLast = DateTime.Now.ToString();
-        PlayerPrefs.SetString("SVBild", JsonUtility.ToJson(svBild));
-
-        string json;
-
-        using (FileStream fs = new FileStream("user.json", FileMode.OpenOrCreate))
-        {
-            json = svBild.ToString();
-            //json = JsonConvert.SerializeObject(svBild);
-            //JsonUtility.FromJson<BildSave>(fs, svBild);
-            print(json);
-        }
-    }*/
-
     private void SetStart() // Добавление начальных параметров игры 
     {
         int i = 0;
         foreach (Building item in ManyBuildingLocal)
         {
             print("есть " + item.Id);
-            BildAll.ManyBuilding.Add(item);
+            BildAll.ManyBuilding.Add(item); // важно чтобы это было впервый раз
             i++;
         }
-        Data.CountMoney = svBild.CountMoney;
+        Data.CountMoney = 0;
     }
 
     private void SetStartRestart() // сброс прогресса
@@ -124,20 +78,16 @@ public class BildAll : MonoBehaviour
         Data.CountMoney = 0;
     }
 
-    private void OnApplicationPause(bool pause)
+    /*private void OnApplicationPause(bool pause)
     {
         print("Пауза приложения");
         if (pause) SaveGameData();
         else LoadGameData();
-
-        /*if (pause) Save();
-        else Load();*/
-    }
+    }*/
 
     private void OnApplicationQuit() // сохраняет но только когда выключено
     {
         SaveGameData();
-        /*Save();*/
         print("Выход из приложения");
     }
 
@@ -152,20 +102,21 @@ public class BildAll : MonoBehaviour
         return m1;
     }
 
-    // тестовые данные
-    string filePath = "";
-    string dataAsJson;
-    BildSave loadedData;
+
 
     // тестовые Загрузка
     private void LoadGameData()
     {
-        /*string filePath = "";
-        string dataAsJson;*/
-
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         filePath = Application.dataPath + "/StreamingAssets/data.json";
-        /*if (File.Exists(filePath) && File.ReadAllText(filePath) != "")
+#elif UNITY_ANDROID
+        filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
+#endif
+        //filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
+
+        if (!(File.Exists(filePath))) using (FileStream fstream = new FileStream(filePath, FileMode.Create)) { }
+
+        if  (File.ReadAllText(filePath) != "{}" && File.ReadAllText(filePath) != "")
         {
             dataAsJson = File.ReadAllText(filePath);
             loadedData = JsonUtility.FromJson<BildSave>(dataAsJson);
@@ -174,7 +125,7 @@ public class BildAll : MonoBehaviour
 
             float timeSecond, timeMin, moneySecond; // минуты это + часы + дни + года
 
-            BildAll.ManyBuilding = loadedData.ManyBuildingLocal;
+            BildAll.ManyBuilding = loadedData.ManyBuildingLocal; 
             Data.CountMoney = loadedData.CountMoney;
 
             TimeSpan tm;
@@ -189,54 +140,23 @@ public class BildAll : MonoBehaviour
             }
         }
         else
-        {*/
-            Debug.LogError("Can not load game data!");
+        {
+            if (File.ReadAllText(filePath) == "") File.WriteAllText(filePath, "{}");
+            //Debug.LogError("Can not load game data!");
+            Debug.Log("Сброс сохранений");
             SetStart();
-        //}
-#elif UNITY_ANDROID
-        filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
-        StartCoroutine(GetDataInAndroid(filePath));
-#endif
-    }
-
-    //тестовое Загрузка
-    IEnumerator GetDataInAndroid(string url)
-    {
-        WWW www = new WWW(url);
-        yield return www;
-        if (www.text != null)
-        {
-            string dataAsJson = www.text;
-            loadedData = JsonUtility.FromJson<BildSave>(dataAsJson);
-
-            print("Проверочное");
-
-            float timeSecond, timeMin, moneySecond; // минуты это + часы + дни + года
-
-            BildAll.ManyBuilding = loadedData.ManyBuildingLocal;
-            Data.CountMoney = loadedData.CountMoney;
-
-            TimeSpan tm;
-            if (loadedData.DateLast != null)
-            {
-                tm = DateTime.Now - DateTime.Parse(loadedData.DateLast);
-                timeMin = tm.Minutes + tm.Hours * 60 + tm.Days * 60 * 24;
-                timeSecond = tm.Seconds;
-                moneySecond = MoneyPerSecond();
-                print("Зарабатываем " + moneySecond + " в секунду");
-                print("Заработали во время отсутствия: " + (moneySecond * timeSecond + moneySecond * timeMin * 60) / CoefTimeOut);
-            }
-        }
-        else
-        {
-            Debug.LogError("Can not load game data!");
         }
     }
 
     // тестовые Сохранение
     private void SaveGameData()
     {
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
+        filePath = Application.dataPath + "/StreamingAssets/data.json";
+#elif UNITY_ANDROID
+        filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
+#endif
+
         print("Сохранение");
         // сохранение прогресса
 
@@ -255,38 +175,16 @@ public class BildAll : MonoBehaviour
         {
             Debug.LogError("Can not save game data!");
         }
-#elif UNITY_ANDROID
-        filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
-        StartCoroutine(SetDataInAndroid(filePath));
-#endif
     }
-
-    // тестовое Сохранение
-    private void SetDataInAndroid(string url)
-    {
-        loadedData.ManyBuildingLocal = BildAll.ManyBuilding;
-        loadedData.CountMoney = Data.CountMoney;
-        loadedData.DateLast = DateTime.Now.ToString();
-
-        if (File.Exists(url))
-        {
-            File.WriteAllText(url, JsonUtility.ToJson(loadedData));
-        }
-        else
-        {
-            Debug.LogError("Can not save game data!");
-        }
-    }
-
     // добавить удаление прогресса
     // НЕ УДАЛЯЙ
     /*
     for (int i = 0; i < loadListData.Count; i++)
     {
-       if (loadListData[i].name == "ken")
-       {
-           loadListData.Remove(loadListData[i]);
-       }
+        if (loadListData[i].name == "ken")
+        {
+            loadListData.Remove(loadListData[i]);
+        }
     }   
     */
 }
@@ -303,15 +201,15 @@ public class BildAll : MonoBehaviour
 
 
 
-    /*
-    Сохраняемые данные:
-    FactBay факт покупки
-    countUp уровень
-    CostUp стоимость повышения
-    money количество денез за время
-    time это общее время время
-    timelocal это сколько времени прошло
-    */
+/*
+Сохраняемые данные:
+FactBay факт покупки
+countUp уровень
+CostUp стоимость повышения
+money количество денез за время
+time это общее время время
+timelocal это сколько времени прошло
+*/
 
 [Serializable]
 public class Building
