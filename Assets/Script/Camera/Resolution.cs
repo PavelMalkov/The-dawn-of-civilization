@@ -20,7 +20,7 @@ public class Resolution : MonoBehaviour
     }
 }
 
-// Этот класс статический может хранить в себе значения
+// Этот класс статический может хранить в себе значения он используется еще для конвертации чисел и их формата вывода
 public static class Data
 {
     public static float CountMoney = 0;
@@ -46,7 +46,7 @@ public static class Data
             x /= 1000;
             str2 = "B";
         }
-        str1 = x.ToString("####0.##") + str2;
+        str1 = x.ToString("####0.#") + str2;
         return str1;
     } 
 }
