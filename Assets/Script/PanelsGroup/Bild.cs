@@ -1,173 +1,53 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using UnityEngine.UI;
-using System;
 
-public class Bild : MonoBehaviour
+[Serializable]
+public class Bild
 {
-    // Это объекты которые изменяются и привязываются в самом префабе поэтому они скрыты
-    [HideInInspector]
-    public Image BildImage;
-    //[HideInInspector]
-    public Text Name;
-    [HideInInspector]
-    public Text Timer;
-    [HideInInspector]
-    public Text txtCost;
-    [HideInInspector]
-    public Text txtUp;
-    [HideInInspector]
-    public Text txtMoney;
-    [HideInInspector]
-    public Scrollbar Progress;
-    [HideInInspector]
-    public Button Bay;
-    [HideInInspector]
-    public Button LevelUp;
-
-    // вот эти данные должны храниться
+    // обычные данные
     public int Id; // номер здания
-    //private string homeName; //название здания
-    //private Sprite bildimage; // его изображение
-    //private float money; // сколько денег здание приносит
-    //private float CostUp; // стоимость повышения уровня
-    //private float coefficientUp; // коэффициент повышения уровня
-    //private float coefficientMoney; // коэффициент повышения уровня
-    //private float time; // сколько необходимо времени
-    //private float CostBay; // Стоимость покупки
-    public Image BildMain; // Изображение дома на игровом поле
-    //private int countUp = 0; // какой уровень
-    //private bool FactBay = false; // факт покупки
-    //private float timelocal; // сколько времени прошло
-    /*
-    Сохраняемые данные: 
-    FactBay факт покупки
-    countUp уровень
-    CostUp стоимость повышения
-    money количество денез за время
-    time это общее время время 
-    timelocal это сколько времени прошло
-    */
+    public string homeName; //название здания
+    public float CostBay; // Стоимость покупки
+    public Sprite bildimage; // его изображение
+    public float coefficientUp; // коэффициент повышения уровня
+    public float coefficientMoney; // коэффициент повышения уровня
 
-    Building ThisBild;
+    // сохраняемые данные
+    public bool FactBay; // факт покупки
+
+    public int countUp; // какой уровень
+
+    public float CostUpLevel;
+    public float MoneyLevel;
+
+    public float CostUp; // стоимость повышения уровня 
+    public float Money; // сколько денег здание приносит
+
+    public float time; // сколько необходимо времени
+    public float timelocal; // сколько времени прошло
 
 
-    void Start()
+    // Надо нормально сделать get set
+
+    public void getbildList(bool _FactBay, int _countUp, float _CostUp, float _money, float _time, float _timelocal, string _homeName, float _CostBay, Sprite _bildimage,
+        float _coefficientUp, float _coefficientMoney)
     {
-        print(Id);
-        ThisBild = BildAll.GetBildSetting(Id);
-
-        RectTransform a = this.GetComponent<RectTransform>();
-        float SizeX = Data.X * 0.9f;
-        float SizeY = SizeX / 5.7857f;
-        a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
-
-        BildImage.sprite = ThisBild.bildimage;
-
-        if (ThisBild.FactBay == false) // здание еще не куплено
-        {
-            NotBayView();
-            Name.text = ThisBild.homeName;
-            BildImage.sprite = ThisBild.bildimage;
-            txtCost.text = "Стоимость покупки " + Data.ConvertTxt(ThisBild.CostBay) + "$";
-        }
-        else // здание уже куплено
-        {
-            bayView();
-            Name.text = ThisBild.homeName + "";
-            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
-            txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
-            StartCoroutine(Time());
-        }
+        _FactBay = FactBay; _countUp = countUp; _CostUp = CostUp; _money = Money; _time = time; _timelocal = timelocal; _homeName = homeName; _CostBay = CostBay; _bildimage = bildimage;
+        _coefficientUp = coefficientUp; _coefficientMoney = coefficientMoney;
     }
 
-    public void ClickBay()
+    public void getbildList(int _Id, bool _FactBay, int _countUp, float _CostUp, float _money, float _time, float _timelocal, string _homeName, float _CostBay, Sprite _bildimage,
+    float _coefficientUp, float _coefficientMoney)
     {
-        if (Data.CountMoney >= ThisBild.CostBay)
-        {
-            Data.CountMoney -= ThisBild.CostBay;
-            ThisBild.FactBay = true;
-
-            bayView();
-            // прогресс строительства (количество домов)
-            Data.BildCount++;
-            // повышение уровня
-            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
-            txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
-            StartCoroutine(Time());
-        }
-        // можно добавить что денег не достаточно
+        _Id = Id;
+        _FactBay = FactBay; _countUp = countUp; _CostUp = CostUp; _money = Money; _time = time; _timelocal = timelocal; _homeName = homeName; _CostBay = CostBay;
+        _bildimage = bildimage; _coefficientUp = coefficientUp; _coefficientMoney = coefficientMoney;
     }
 
-    private void bayView()
+    public void setbildList(Bild bildList)
     {
-        Bay.gameObject.SetActive(false);
-        LevelUp.gameObject.SetActive(true);
-        Timer.gameObject.SetActive(true);
-        Progress.gameObject.SetActive(true);
-        BildMain.gameObject.SetActive(true);
-        txtMoney.gameObject.SetActive(true);
-        txtUp.gameObject.SetActive(true);
-        Bay.gameObject.SetActive(false);
-    }
-
-    private void NotBayView()
-    {
-        Timer.gameObject.SetActive(false);
-        Progress.gameObject.SetActive(false);
-        LevelUp.gameObject.SetActive(false);
-        BildMain.gameObject.SetActive(false);
-        txtMoney.gameObject.SetActive(false);
-        txtUp.gameObject.SetActive(false);
-    }
-    
-    // добавить защиту от повторного нажатия +
-    public void ClickUp()
-    {
-        if (Data.CountMoney >= ThisBild.CostUp)
-        {
-            Data.CountMoney -= ThisBild.CostUp;
-
-            ThisBild.countUp++; // повышение уровня
-
-            ThisBild.Money *= ThisBild.coefficientUp;
-            ThisBild.CostUp *= ThisBild.coefficientMoney;
-            txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
-            txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
-        }
-    }
-
-
-    IEnumerator Time()
-    {
-        if (ThisBild.timelocal == 0) ThisBild.timelocal = ThisBild.time;
-        int sec, min; //hour;
-        int secAll, minAll;// hourAll;
-        //hour = (int)TimeSpan.FromSeconds(time).TotalHours; 
-        
-        while (true)
-        {
-            // установить таймер
-            minAll = (int)TimeSpan.FromSeconds(ThisBild.time).TotalMinutes; // 1
-            secAll = (int)TimeSpan.FromSeconds(ThisBild.time - (minAll * 60)).TotalSeconds; // 60
-
-            min = (int)TimeSpan.FromSeconds(ThisBild.timelocal).TotalMinutes; // 1
-            sec = (int)TimeSpan.FromSeconds(ThisBild.timelocal - (min * 60)).TotalSeconds; // 60
-            ThisBild.timelocal -= 1;
-
-            string res = String.Format("{0:d2}:{1:d2}/({2:d2}:{3:d2})", min,sec,minAll,secAll);
-            
-            Timer.text = res;
-
-            // установить прогресс
-            Progress.size = (ThisBild.time - ThisBild.timelocal -1)/ ThisBild.time; // тут всегда 0
-            yield return new WaitForSeconds(1);
-            if (ThisBild.timelocal == 0) 
-            {
-                Data.CountMoney += ThisBild.Money;
-                ThisBild.timelocal = ThisBild.time;
-            }; 
-        }
+        bildList.Id = Id;
+        bildList.FactBay = FactBay; bildList.countUp = countUp; bildList.CostUp = CostUp; bildList.Money = Money; bildList.time = time; bildList.timelocal = timelocal;
+        bildList.homeName = homeName; bildList.CostBay = CostBay; bildList.bildimage = bildimage; bildList.coefficientUp = coefficientUp; bildList.coefficientMoney = coefficientMoney;
     }
 }

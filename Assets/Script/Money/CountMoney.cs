@@ -17,6 +17,7 @@ public class CountMoney : MonoBehaviour
         StartCoroutine(SumEn());
     }
 
+
     IEnumerator SumEn()
     {
         while (true)

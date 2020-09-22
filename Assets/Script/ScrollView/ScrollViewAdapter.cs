@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ScrollViewAdapter : MonoBehaviour
 {
-    public RectTransform prefarb;
+    public RectTransform prefab;
     public Text countText;
     public RectTransform content;
 
@@ -25,7 +25,7 @@ public class ScrollViewAdapter : MonoBehaviour
 
         foreach (var model in models)
         {
-            var instance = GameObject.Instantiate(prefarb.gameObject) as GameObject;
+            var instance = GameObject.Instantiate(prefab.gameObject) as GameObject;
             instance.transform.SetParent(content, false);
             InitializeItemView(instance, model);
         }

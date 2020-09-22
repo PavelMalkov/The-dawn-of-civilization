@@ -6,14 +6,14 @@ using UnityEngine.UI;
 using UnityEditor;
 
 
-[CustomEditor(typeof(BildAll))]
+[CustomEditor(typeof(BildControl))]
 public class EditorBildAll : Editor
 {
-    private BildAll MyBild;
+    private BildControl MyBild;
 
     public void OnEnable()
     {
-        MyBild = (BildAll)target;
+        MyBild = (BildControl)target;
     }
 
     public override void OnInspectorGUI()
@@ -24,13 +24,13 @@ public class EditorBildAll : Editor
         if (MyBild.ManyBuildingLocal.Count > 0)
         {
 
-            foreach (Building item in MyBild.ManyBuildingLocal)
+            foreach (Bild item in MyBild.ManyBuildingLocal)
             {
                 EditorGUILayout.BeginVertical("Box");
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("X", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    BildAll.ManyBuilding.Remove(item);
+                    BildControl.ManyBuilding.Remove(item);
                     break;
                 }
                 EditorGUILayout.EndHorizontal();
@@ -87,7 +87,7 @@ public class EditorBildAll : Editor
             }
         }
         else EditorGUILayout.LabelField("Нет элементов в списке");
-        if (GUILayout.Button("Добавить описание", GUILayout.Height(30))) MyBild.ManyBuildingLocal.Add(new Building());
+        if (GUILayout.Button("Добавить описание", GUILayout.Height(30))) MyBild.ManyBuildingLocal.Add(new Bild());
         //if (GUI.changed) SetObjectDirty(MyBild.gameObject);
     }
 

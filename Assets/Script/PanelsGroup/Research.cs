@@ -62,8 +62,8 @@ public class Research : MonoBehaviour
             txtCost.text = "Ускорение приобретено";
 
             //само ускорение
-            BildAll.ManyBuilding[Id].time /= 2;
-            BildAll.ManyBuilding[Id].timelocal = (float)Math.Round(BildAll.ManyBuilding[Id].timelocal / 2);
+            //BildAll.ManyBuilding[Id].time /= 2;
+            //BildAll.ManyBuilding[Id].timelocal = (float)Math.Round(BildAll.ManyBuilding[Id].timelocal / 2);
         }
         // можно добавить что денег не достаточно
     }
