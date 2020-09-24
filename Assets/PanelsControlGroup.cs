@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PanelsControlGroup : MonoBehaviour
 {
-    public List<PositionPanel> Panels; // это список наших домов
+    public List<PositionPanel> Panels; // это список наших Панелей
 
     public void OpenControlGroup(int Id)
     {
@@ -12,7 +12,10 @@ public class PanelsControlGroup : MonoBehaviour
         foreach (PositionPanel item in Panels)
         {
             if (i != Id) item.ClouseOpen();
-            else item.ChancheStateOpen();
+            else
+            {
+                item.ChancheStateOpen();
+            }
             i++;
         }
     }

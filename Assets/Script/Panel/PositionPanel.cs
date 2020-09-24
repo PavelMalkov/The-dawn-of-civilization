@@ -15,8 +15,8 @@ public class PositionPanel : MonoBehaviour
     Vector2 Open;
     Vector2 Closed;
 
-    public Scrollbar scrollbar;
-    private bool scrollbarFlag = true;
+    /*public Scrollbar scrollbar;
+    private bool scrollbarFlag = true;*/
 
     public VerticalLayoutGroup group;
     private bool groupFlag = true;
@@ -24,9 +24,9 @@ public class PositionPanel : MonoBehaviour
     // дублирующийся префаб
     public RectTransform prefab;
     public RectTransform content;
-    public List<Image> BildOnScreen;
+    public List<Image> BildOnScreen = new List<Image>();
 
-    private float Shir;
+    private List<GameObject> BildGameObjects = new List<GameObject>();
 
     void Start()
     {
@@ -39,7 +39,7 @@ public class PositionPanel : MonoBehaviour
         print(X + " " + Y);
 
         Closed = new Vector2(0,-Y);
-        Open = new Vector2(0, -Y/2);
+        Open = new Vector2(0, -Y / 2);
         transform.localPosition = Closed;
 
         // генерация блоков
@@ -51,16 +51,28 @@ public class PositionPanel : MonoBehaviour
             BildView bildView = instance.GetComponent<BildView>();
             bildView.Id = i;
             bildView.BildMain = image;
-            instance.transform.SetParent(content, false);
-            if (i > Data.BildCount) instance.SetActive(false);
+            instance.transform.SetParent(content, false); // устанавлиеваем его дочерним
+            instance.SetActive(true); // скрываем объект
+            BildGameObjects.Add(instance);
+            i++;
+        } 
+        
+        // обновление значение на промотке и выравнивания
+        //if (scrollbarFlag) { scrollbar.value = 1; scrollbarFlag = false; } // надо посоветоваться нужно ли всегда с начала включать
+        //else scrollbarFlag = true;
+        //ChancheBotton();
+    }
+
+    // размеры объекта в зависимости находящихся на нем объектов (купленных)
+    public void ChancheBotton()
+    {
+        int i = 0;
+        foreach (var gameObject in BildGameObjects)
+        {
+            if (i <= Data.BildCount) gameObject.SetActive(true);                
+            else gameObject.SetActive(false);
             i++;
         }
-        
-        group.padding.bottom = Mathf.Max(0, (int)((Y / 2)  * 0.75 - (Y / 2) * 0.2 * (Data.BildCount + 1)));
-
-        // обновление значение на промотке и выравнивания
-        if (scrollbarFlag) { scrollbar.value = 1; scrollbarFlag = false; } // надо посоветоваться нужно ли всегда с начала включать
-        else scrollbarFlag = true;
     }
 
     // Update is called once per frame
@@ -90,8 +102,7 @@ public class PositionPanel : MonoBehaviour
                 progress += step;
             }
         }
-
-        group.padding.bottom = Mathf.Max(0, (int)((Y / 2) * 0.75 - (Y / 2) * 0.2 * (Data.BildCount + 1)));
+        ChancheBotton();
     }
 
     public void ChancheStateOpen()

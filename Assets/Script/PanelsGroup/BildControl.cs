@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class BildControl : MonoBehaviour
 {
     public float CoefTimeOut;
-    public List<Bild> ManyBuildingLocal; // это список наших домов
-    public static List<Bild> ManyBuilding; // это список наших домов (для связи с другими скриптами)
+    public List<Bild> ManyBuildingLocal = new List<Bild>(); // это список наших домов
+    public static List<Bild> ManyBuilding = new List<Bild>(); // это список наших домов (для связи с другими скриптами)
 
     public bool ResetSave;
 
@@ -56,6 +56,7 @@ public class BildControl : MonoBehaviour
         if (OpenGame)
         {
             LoadGameData();
+            if (ResetSave) SetStartRestart();
             OpenGame = false;
         }
         else
@@ -124,15 +125,13 @@ public class BildControl : MonoBehaviour
             i++;
         }
         Data.CountMoney = 0;
+        Data.BildCount = 0;
     }
-
-
-
 
     // тестовые Загрузка
     private void LoadGameData()
     {
-        filePath = Application.persistentDataPath + "/data3.txt";
+        filePath = Application.persistentDataPath + "/data.json";
 
 
         if (!(File.Exists(filePath))) using (FileStream fstream = new FileStream(filePath, FileMode.Create)) { }
@@ -184,7 +183,7 @@ public class BildControl : MonoBehaviour
             filePath = "jar:file://" + Application.dataPath + "!/assets/data.json";
     #endif*/
 
-        filePath = Application.persistentDataPath + "/data3.txt";
+        filePath = Application.persistentDataPath + "/data.json";
 
         print("Сохранение");
         // сохранение прогресса

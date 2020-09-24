@@ -32,6 +32,7 @@ public class BildView : MonoBehaviour
 
     Bild ThisBild;
 
+    GameObject Parent;
 
     void Start()
     {
@@ -75,6 +76,9 @@ public class BildView : MonoBehaviour
             // повышение уровня
             txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
             txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
+
+            this.gameObject.GetComponentInParent<PositionPanel>().ChancheBotton();
+
             StartCoroutine(Time());
         }
         // можно добавить что денег не достаточно
