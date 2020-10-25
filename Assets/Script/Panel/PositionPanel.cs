@@ -15,11 +15,7 @@ public class PositionPanel : MonoBehaviour
     Vector2 Open;
     Vector2 Closed;
 
-    /*public Scrollbar scrollbar;
-    private bool scrollbarFlag = true;*/
-
-    public VerticalLayoutGroup group;
-    private bool groupFlag = true;
+    private bool ClouseFlag = true; // Это параметр впервый ли раз запускается игра
 
     // дублирующийся префаб
     public RectTransform prefab;
@@ -28,13 +24,22 @@ public class PositionPanel : MonoBehaviour
 
     private List<GameObject> BildGameObjects = new List<GameObject>();
 
+    private void OnApplicationPause() // Это нужно если игрок свернул игру
+    {
+        if (ClouseFlag)
+        {
+            ClouseFlag = false;
+        }
+        else ChancheActive();
+    }
+
     void Start()
     {
         // Расчет размеров панели
         RectTransform Panel = GetComponent<RectTransform>(); ;
         X = Data.X;
         Y = Data.Y;
-        RectTransformExtensions.SetTop(Panel,Y / 2);
+        RectTransformExtensions.SetTop(Panel,(Y / 2));
 
         print(X + " " + Y);
 
@@ -47,32 +52,30 @@ public class PositionPanel : MonoBehaviour
         foreach (var image in BildOnScreen)
         {
             var instance = GameObject.Instantiate(prefab.gameObject) as GameObject;
-            //BildView bildView = GetComponent<BildView>().gameObject(instance);
             BildView bildView = instance.GetComponent<BildView>();
             bildView.Id = i;
             bildView.BildMain = image;
             instance.transform.SetParent(content, false); // устанавлиеваем его дочерним
-            instance.SetActive(true); // скрываем объект
+            instance.SetActive(true); // 
             BildGameObjects.Add(instance);
             i++;
-        } 
-        
-        // обновление значение на промотке и выравнивания
-        //if (scrollbarFlag) { scrollbar.value = 1; scrollbarFlag = false; } // надо посоветоваться нужно ли всегда с начала включать
-        //else scrollbarFlag = true;
-        //ChancheBotton();
+        }
     }
 
     // размеры объекта в зависимости находящихся на нем объектов (купленных)
-    public void ChancheBotton()
+    public void ChancheActive()
     {
         int i = 0;
         foreach (var gameObject in BildGameObjects)
         {
-            if (i <= Data.BildCount) gameObject.SetActive(true);                
+            if (i <= Data.BildCount)
+            {
+                gameObject.SetActive(true);
+            }
             else gameObject.SetActive(false);
             i++;
         }
+        print("ChancheActive");
     }
 
     // Update is called once per frame
@@ -102,7 +105,6 @@ public class PositionPanel : MonoBehaviour
                 progress += step;
             }
         }
-        ChancheBotton();
     }
 
     public void ChancheStateOpen()

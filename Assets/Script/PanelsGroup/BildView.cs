@@ -37,7 +37,7 @@ public class BildView : MonoBehaviour
     void Start()
     {
         print(Id);
-        ThisBild = BildControl.GetBildSetting(Id);
+        ThisBild = SaveControl.GetBildSetting(Id);
 
         RectTransform a = this.GetComponent<RectTransform>();
         float SizeX = Data.X * 0.9f;
@@ -45,18 +45,16 @@ public class BildView : MonoBehaviour
         a.sizeDelta = new Vector2(SizeX, SizeY); // задаем размер наших блоков зданий
 
         BildImage.sprite = ThisBild.bildimage;
+        Name.text = ThisBild.homeName;
 
         if (ThisBild.FactBay == false) // здание еще не куплено
         {
             NotBayView();
-            Name.text = ThisBild.homeName;
-            BildImage.sprite = ThisBild.bildimage;
             txtCost.text = "Стоимость покупки " + Data.ConvertTxt(ThisBild.CostBay) + "$";
         }
         else // здание уже куплено
         {
             bayView();
-            Name.text = ThisBild.homeName + "";
             txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
             txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
             StartCoroutine(Time());
@@ -77,8 +75,8 @@ public class BildView : MonoBehaviour
             txtUp.text = "Стоимость повышения уровня " + Data.ConvertTxt(ThisBild.CostUp) + "$";
             txtMoney.text = Data.ConvertTxt(ThisBild.Money) + "$";
 
-            this.gameObject.GetComponentInParent<PositionPanel>().ChancheBotton();
-
+            this.gameObject.GetComponentInParent<PositionPanel>().ChancheActive();
+            
             StartCoroutine(Time());
         }
         // можно добавить что денег не достаточно

@@ -6,14 +6,14 @@ using UnityEngine.UI;
 using UnityEditor;
 
 
-[CustomEditor(typeof(BildControl))]
+[CustomEditor(typeof(SaveControl))]
 public class EditorBildAll : Editor
 {
-    private BildControl MyBild;
+    private SaveControl MyBild;
 
     public void OnEnable()
     {
-        MyBild = (BildControl)target;
+        MyBild = (SaveControl)target;
     }
 
     public override void OnInspectorGUI()
@@ -30,7 +30,7 @@ public class EditorBildAll : Editor
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("X", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    BildControl.ManyBuilding.Remove(item);
+                    SaveControl.ManyBuilding.Remove(item);
                     break;
                 }
                 EditorGUILayout.EndHorizontal();

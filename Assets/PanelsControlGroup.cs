@@ -15,6 +15,7 @@ public class PanelsControlGroup : MonoBehaviour
             else
             {
                 item.ChancheStateOpen();
+                item.ChancheActive();
             }
             i++;
         }
