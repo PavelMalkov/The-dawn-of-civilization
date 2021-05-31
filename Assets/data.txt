@@ -1,1 +1,216 @@
-{"CountMoney":15.0,"DateLast":"22.09.2020 12:46:11","ManyBuildingLocal":[{"Id":0,"homeName":"Р”РѕРј","CostBay":10.0,"bildimage":{"instanceID":10772},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":true,"countUp":0,"CostUpLevel":10.0,"MoneyLevel":5.0,"CostUp":10.0,"Money":5.0,"time":10.0,"timelocal":1.0},{"Id":1,"homeName":"Р”РѕРј Р›РµСЃРѕСЂСѓР±Р°","CostBay":50.0,"bildimage":{"instanceID":10772},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":true,"countUp":0,"CostUpLevel":10.0,"MoneyLevel":5.0,"CostUp":10.0,"Money":5.0,"time":30.0,"timelocal":20.0},{"Id":2,"homeName":"РЁРєРѕР»Р°","CostBay":120.0,"bildimage":{"instanceID":11164},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":false,"countUp":0,"CostUpLevel":20.0,"MoneyLevel":10.0,"CostUp":20.0,"Money":10.0,"time":60.0,"timelocal":0.0},{"Id":3,"homeName":"РЎРµР»СЊСЃРєРѕРµ С…РѕР·СЏР№СЃС‚РІРѕ","CostBay":30.0,"bildimage":{"instanceID":10876},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":false,"countUp":0,"CostUpLevel":30.0,"MoneyLevel":15.0,"CostUp":30.0,"Money":15.0,"time":10.0,"timelocal":0.0},{"Id":4,"homeName":"РђРјР±Р°СЂ","CostBay":40.0,"bildimage":{"instanceID":10772},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":false,"countUp":0,"CostUpLevel":40.0,"MoneyLevel":20.0,"CostUp":40.0,"Money":20.0,"time":10.0,"timelocal":0.0},{"Id":5,"homeName":"Р–РёРІРѕС‚РЅРѕРІРѕРґСЃС‚РІРѕ","CostBay":50.0,"bildimage":{"instanceID":11164},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":false,"countUp":0,"CostUpLevel":50.0,"MoneyLevel":25.0,"CostUp":50.0,"Money":25.0,"time":10.0,"timelocal":0.0},{"Id":6,"homeName":"Р—Р°РјРѕРє","CostBay":60.0,"bildimage":{"instanceID":11380},"coefficientUp":1.100000023841858,"coefficientMoney":1.2000000476837159,"FactBay":false,"countUp":0,"CostUpLevel":60.0,"MoneyLevel":30.0,"CostUp":60.0,"Money":30.0,"time":10.0,"timelocal":0.0}]}
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+[AddComponentMenu("Camera-Control/CameraZoom")]
+
+public class CameraZoom : MonoBehaviour
+{
+    Vector3 touch;
+
+    float speedzoom = 5;
+    public float maxzoom = 5.4f;
+    public float minzoom = 3;
+
+    private float minX, maxX, minY, maxY;
+
+    private float zoomSensitivity = 10.0f;
+    private float zoom;
+
+    void Start()
+    {
+        zoom = GetComponent<Camera>().orthographicSize;
+    }
+
+    void Update()
+    {
+        if (IsPointerOverUIObject())
+        {
+            // Zoom
+            zoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity;
+            zoom = Mathf.Clamp(zoom, minzoom, maxzoom);
+
+            if (Input.touchCount == 2)
+            {
+                Touch touchZero = Input.GetTouch(0);
+                Touch touchOne = Input.GetTouch(1);
+
+                Vector3 touchZeroLastPos = touchZero.position - touchZero.deltaPosition;
+                Vector3 touchOneLastPos = touchOne.position - touchOne.deltaPosition;
+
+                float disTouch = (touchZeroLastPos - touchOneLastPos).magnitude;
+                float currentDistTouch = (touchZero.position - touchOne.position).magnitude;
+
+                float difference = currentDistTouch - disTouch;
+
+                ChancheZoom(difference * 0.01f);
+            }
+            // Scroll
+            else if(Input.GetMouseButton(0))
+            {
+                touch = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                // Card limit
+                CalcMinMax();
+                transform.position = new Vector3(Mathf.Clamp(transform.position.x, minX, maxX), Mathf.Clamp(transform.position.y, minY, maxY), -20f);
+            }
+
+        }
+    }
+
+    void LateUpdate()
+    {
+        GetComponent<Camera>().orthographicSize = Mathf.Lerp(GetComponent<Camera>().orthographicSize, zoom, Time.deltaTime * speedzoom);
+    }
+
+    void ChancheZoom(float increment)
+    {
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, minzoom, maxzoom);
+    }
+
+    void CalcMinMax()// здесс остановился
+    {
+        maxX = (maxzoom - zoom)  * 720 / 1280; //(maxzoom - Camera.main.orthographicSize);
+        minX = -maxX;
+
+        maxY = (1 + maxzoom - zoom);
+        minY = (zoom - maxzoom - 1);
+    }
+
+    //When Touching UI
+    // проверка активного места нажатия
+    private bool IsPointerOverUIObject()
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count == 0;
+    }
+
+    // проверка по координатам
+    private bool IsPointerOverUIObject(float x, float y)
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = new Vector2(x, y);
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count == 0;
+    }
+}
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PanelCreate : MonoBehaviour
+{
+    private bool ClouseFlag = true; // Это параметр впервый ли раз запускается игра
+
+    // дублирующийся префаб
+    [SerializeField]
+    public RectTransform prefab;
+    [SerializeField]
+    public RectTransform content;
+
+    [SerializeField]
+    List<GameObject> BildOnScreen = new List<GameObject>();
+    [SerializeField]
+    List<int> Pos = new List<int>();
+
+    private List<GameObject> BildGameObjects = new List<GameObject>();
+
+    private void OnApplicationPause() // Это нужно если игрок свернул игру
+    {
+        if (ClouseFlag)
+        {
+            ClouseFlag = false;
+        }
+        else ChancheActive();
+    }
+
+    private void Start()
+    {
+
+    }
+
+    /*
+    private void GenerateBlock(string Name)
+    {
+        int i = 0;
+        // генерация блоков
+        foreach (var gameObject in BildOnScreen)
+        {
+            var instance = GameObject.Instantiate(prefab.gameObject) as GameObject;
+
+            //print(NameObject + "---------------------");
+            if (Name == "Constraction") // это окно строительства
+            {
+                BildView bildView = instance.GetComponent<BildView>();
+                bildView.Id = Pos[i];
+                bildView.BildMain = gameObject;
+            }
+            else if (Name == "Boost") // это окно ускорения производства
+            {
+                BoostView bildBoost = instance.GetComponent<BoostView>();
+                bildBoost.Id = Pos[i];
+                bildBoost.IdBoost = Pos[i];
+                bildBoost.IdParams = 0;
+            }
+            instance.transform.SetParent(content, false); // устанавлиеваем его дочерним
+            instance.SetActive(true); // отрисовка объектов которые подходят
+            BildGameObjects.Add(instance);
+            i++;
+        }
+    }*/
+
+    // размеры объекта в зависимости находящихся на нем объектов (купленных)
+    public void ChancheActive()
+    {
+        int i = 0;
+        if (this.name == "Constraction")
+        {
+            /*foreach (var gameObject in BildGameObjects)
+            {
+                if (i <= Currency.BildCount)
+                {
+                    gameObject.SetActive(true);
+                }
+                else gameObject.SetActive(false);
+                i++;
+            }*/
+            gameObject.SetActive(true);
+        }
+        else if (this.name == "Boost")
+        {
+            i = 1;
+            foreach (var gameObject in BildGameObjects)
+            {
+                gameObject.SetActive(true);
+            }
+            foreach (var gameObject in BildGameObjects)
+            {
+                if (gameObject.GetComponent<BoostView>().CanYouBay) gameObject.SetActive(true);
+                else gameObject.SetActive(false);
+                i++;
+            }
+        }
+        print("ChancheActive");
+    }
+}
+
+            switch (State)
+            {
+                case 0:
+                    Debug.Log("Исследование здания");
+                    SaveControl.SetBildSetting(IdBild,true); // устанавливаем воможность покупки зданий
+                    break;
+                case 1:
+                    Debug.Log("Бонусы для здания");
+                    // нужно сделать
+                    break;
+                default:
+                    Debug.Log("Ничего");
+                    break;
+            }

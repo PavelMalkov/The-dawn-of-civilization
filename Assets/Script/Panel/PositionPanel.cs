@@ -13,32 +13,14 @@ public class PositionPanel : MonoBehaviour
     bool StateOpen = false;
 
     Vector2 Open;
-    Vector2 Closed;
-
-    private bool ClouseFlag = true; // Это параметр впервый ли раз запускается игра
-
-    // дублирующийся префаб
-    public RectTransform prefab;
-    public RectTransform content;
-    public List<Image> BildOnScreen = new List<Image>();
-
-    private List<GameObject> BildGameObjects = new List<GameObject>();
-
-    private void OnApplicationPause() // Это нужно если игрок свернул игру
-    {
-        if (ClouseFlag)
-        {
-            ClouseFlag = false;
-        }
-        else ChancheActive();
-    }
+    Vector2 Closed;    
 
     void Start()
     {
         // Расчет размеров панели
         RectTransform Panel = GetComponent<RectTransform>(); ;
-        X = Data.X;
-        Y = Data.Y;
+        X = Currency.X;
+        Y = Currency.Y;
         RectTransformExtensions.SetTop(Panel,(Y / 2));
 
         print(X + " " + Y);
@@ -46,37 +28,7 @@ public class PositionPanel : MonoBehaviour
         Closed = new Vector2(0,-Y);
         Open = new Vector2(0, -Y / 2);
         transform.localPosition = Closed;
-
-        // генерация блоков
-        int i = 0;
-        foreach (var image in BildOnScreen)
-        {
-            var instance = GameObject.Instantiate(prefab.gameObject) as GameObject;
-            BildView bildView = instance.GetComponent<BildView>();
-            bildView.Id = i;
-            bildView.BildMain = image;
-            instance.transform.SetParent(content, false); // устанавлиеваем его дочерним
-            instance.SetActive(true); // 
-            BildGameObjects.Add(instance);
-            i++;
-        }
-    }
-
-    // размеры объекта в зависимости находящихся на нем объектов (купленных)
-    public void ChancheActive()
-    {
-        int i = 0;
-        foreach (var gameObject in BildGameObjects)
-        {
-            if (i <= Data.BildCount)
-            {
-                gameObject.SetActive(true);
-            }
-            else gameObject.SetActive(false);
-            i++;
-        }
-        print("ChancheActive");
-    }
+    }  
 
     // Update is called once per frame
     void Update()

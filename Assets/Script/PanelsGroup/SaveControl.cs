@@ -10,10 +10,13 @@ public class SaveControl : MonoBehaviour
 {
     public float CoefTimeOut;
 
-    public List<Bild> ManyBuildingLocal = new List<Bild>(); // это список наших домов которые добавляются из unity
+    public List<Bild> BildLocal = new List<Bild>(); // это список наших домов которые добавляются из unity
+    public List<Boost> BoostLocal = new List<Boost>(); // это список наших ускорений которые добавляются из unity
+    public List<Resheach> ReseachLocal = new List<Resheach>(); // это список наших исследований которые добавляются из unity
 
-    public static List<Bild> ManyBuilding = new List<Bild>(); // это список наших домов (для связи с другими скриптами)
-    public static List<Boost> boosts = new List<Boost>(); // это список наших домов (для связи с другими скриптами)
+    public static List<Bild> Bilds = new List<Bild>(); // это список наших домов (для связи с другими скриптами)
+    public static List<Boost> Boosts = new List<Boost>(); // это список наших ускорений (для связи с другими скриптами)
+    public static List<Resheach> Reseachs = new List<Resheach>(); // это список наших исследований (для связи с другими скриптами)
 
     public bool ResetSave; //флаг для пересохранения
 
@@ -21,11 +24,15 @@ public class SaveControl : MonoBehaviour
 
     string filePath = ""; // путь
     string dataAsJson; // хранящиеся данные
+
     Save loadedData; // обращение к ним
+
+    private bool load = false;
+
 
     static SaveControl()
     {
-        ManyBuilding = new List<Bild>();
+        Bilds = new List<Bild>();
     }
 
     private void Awake()
@@ -37,45 +44,32 @@ public class SaveControl : MonoBehaviour
         //The dawn of civilization 
         //LoadGameData();
         //print(Application.persistentDataPath);
-        //OpenGame = true;
+        Preferense.Div = CoefTimeOut;
+        if (!load) 
+        {
+            if (ResetSave) SetStart();
+            else LoadGameData();
+            load = true;
+        }
+        SaveGameData();
+
     }
 
-    private void OnApplicationQuit() // сохраняет но только когда выключено
-    {
-        if (OpenGame)
-        {
-            LoadGameData();
-            OpenGame = false;
-        }
-        else
-        {
-            SaveGameData();
-            OpenGame = true;
-        }
-        print("Выход из приложения");
-    }
-
-    private void OnApplicationPause() // сохраняет но только когда выключено
-    {
-        if (OpenGame)
-        {
-            LoadGameData();
-            if (ResetSave) SetStartRestart();
-            OpenGame = false;
-        }
-        else
-        {
-            SaveGameData();
-            OpenGame = true;
-        }
-        print("Выход из приложения");
-    }
-
-    private void Destroy() // сохраняет но только когда выключено
+    private void OnApplicationQuit() // сохраняет но только когда выключено 
     {
         SaveGameData();
-        print("Выход из приложения");
     }
+
+    /*private void OnApplicationPause(bool pause) // сохраняет но только когда выключено // 1
+    {   
+        if (!load)
+        {
+            if (ResetSave) SetStart();
+            else LoadGameData();
+            load = true;
+        } 
+        SaveGameData();
+    }*/
 
     DateTime CheckGlobalTime()
     {
@@ -91,45 +85,91 @@ public class SaveControl : MonoBehaviour
         return dateTime.ToUniversalTime();
     }
 
-
-    //Сколько мы денег зарабатываем
-    private float MoneyPerSecond()
+    //получение здания
+    public static Bild GetBildSetting(int ID) 
     {
-        float m1 = 0;
-        foreach (Bild item in SaveControl.ManyBuilding)
+        foreach (var item in SaveControl.Bilds)
         {
-            if (item.FactBay) m1 += item.Money / item.time;
+            if (item.Id == ID) return item;
         }
-        return m1;
+        return null;
     }
 
-    //получение здания
-    public static Bild GetBildSetting(int ID) { return SaveControl.ManyBuilding[ID]; }
+    //получение ускорения
+    public static Boost GetBoostSetting(int IDboost)
+    { 
+        foreach (var item in SaveControl.Boosts)
+        {
+            if (item.IdBoost == IDboost) return item;
+        }
+        return null;
+    }
+
+    //получение исследования
+    public static Resheach GetReseachSetting(int IDreseach)
+    {
+        foreach (var item in SaveControl.Reseachs)
+        {
+            if (item.IdReseach == IDreseach) return item;
+        }
+        return null;
+    }
+
+
+    // Установка факта возможности покупки ускорения
+    public static void SetBoostSetting(int IDboost, bool set) 
+    {
+        foreach (var item in SaveControl.Boosts)
+        {
+            if (item.IdBoost == IDboost) item.CanYouBay = set;
+        }
+    }
+
+    // Установка факта возможности покупки здания
+    public static void SetBildSetting(int IDbild, bool set)
+    {
+        foreach (var item in SaveControl.Bilds)
+        {
+            if (item.Id == IDbild) item.YouCanBay = set;
+        }
+    }
 
     private void SetStart() // Добавление начальных параметров игры 
     {
-        int i = 0;
-        foreach (Bild item in ManyBuildingLocal)
+        foreach (Bild item in BildLocal)
         {
-            print("есть " + item.Id);
-            SaveControl.ManyBuilding.Add(item); // важно чтобы это было впервый раз
-            i++;
+            //print("есть " + item.Id);
+            SaveControl.Bilds.Add(item); // важно чтобы это было впервый раз
         }
-        Data.CountMoney = 0;
-        Data.BildCount = 0;
+        foreach (Boost item in BoostLocal) // добавление данных об ускорении
+        {
+            //print("есть " + item.Id);
+            SaveControl.Boosts.Add(item);
+        }
+        foreach (Resheach item in ReseachLocal) // добавление данных об ускорении
+        {
+            //print("есть " + item.Id);
+            SaveControl.Reseachs.Add(item);
+        }
+        PlayerPrefs.SetString("LastSession",null); // сбрасываем значение последнего запуска
     }
 
     private void SetStartRestart() // сброс прогресса
     {
         int i = 0;
-        foreach (Bild item in ManyBuildingLocal)
+        foreach (Bild item in BildLocal)
         {
             print("есть " + item.Id);
-            SaveControl.ManyBuilding[i] = item;
+            SaveControl.Bilds[i] = item;
             i++;
         }
-        Data.CountMoney = 0;
-        Data.BildCount = 0;
+        i = 0;
+        foreach (Boost item in BoostLocal)
+        {
+            print("есть " + item.Id);
+            SaveControl.Boosts[i] = item;
+            i++;
+        }
     }
 
     // тестовые Загрузка
@@ -142,34 +182,44 @@ public class SaveControl : MonoBehaviour
 
         if (File.ReadAllText(filePath) != "{}" && File.ReadAllText(filePath) != "")
         {
+            // Весь текст файла
             dataAsJson = File.ReadAllText(filePath);
+            // Сохранение текста в класс
             loadedData = JsonUtility.FromJson<Save>(dataAsJson);
 
-            SaveControl.ManyBuilding = loadedData.ManyBuildingLocal;
-            Data.CountMoney = loadedData.CountMoney;
+            // использование статического объекта для хранения полученных данных
+            SaveControl.Bilds = loadedData.bilds;
+            SaveControl.Boosts = loadedData.boosts;
+            SaveControl.Reseachs = loadedData.resheaches;
+
+            // загрузка всех счетчиков валют
+            Currency.Gold = loadedData.GoldSave;
+            Currency.Science = loadedData.ScienceSave;
 
             // подумай насчет вынести это куда-то
-            foreach (var item in SaveControl.ManyBuilding)
+            int i = 0;
+            foreach (var item in SaveControl.Bilds)
             {
-                if (item.FactBay) Data.BildCount++;
+                if (item.FactBay) Currency.BildCount++;
+                item.bildimage = BildLocal[i].bildimage;
+                i++;
             }
-
-            TimeSpan tm;
-            float timeSecond, timeMin, moneySecond; // минуты это + часы + дни + года
-            if (loadedData.DateLast != null)
+            //
+            i = 0;
+            foreach (var item in SaveControl.Boosts)
             {
-                tm = DateTime.Now - DateTime.Parse(loadedData.DateLast);
-                timeMin = tm.Minutes + tm.Hours * 60 + tm.Days * 60 * 24;
-                timeSecond = tm.Seconds;
-                moneySecond = MoneyPerSecond();
-                print("Зарабатываем " + moneySecond + " в секунду");
-                print("Заработали во время отсутствия: " + (moneySecond * timeSecond + moneySecond * timeMin * 60) / CoefTimeOut);
+                item.BoostImage = BoostLocal[i].BoostImage;
+                i++;
             }
         }
         else
         {
             if (File.ReadAllText(filePath) == "") File.WriteAllText(filePath, "{}");
-            //Debug.LogError("Can not load game data!");
+            Debug.Log("Сброс сохранений");
+            SetStart();
+        }
+        if (SaveControl.Bilds.Count == 0)
+        {
             Debug.Log("Сброс сохранений");
             SetStart();
         }
@@ -186,10 +236,12 @@ public class SaveControl : MonoBehaviour
         dataAsJson = File.ReadAllText(filePath); // чтение файла
         loadedData = JsonUtility.FromJson<Save>(dataAsJson); // загрузка параметров
 
-        loadedData.ManyBuildingLocal = SaveControl.ManyBuilding;
-        loadedData.boosts = SaveControl.boosts;
-        loadedData.CountMoney = Data.CountMoney;
-        loadedData.DateLast = DateTime.Now.ToString();
+        loadedData.bilds = SaveControl.Bilds;
+        loadedData.boosts = SaveControl.Boosts;
+        loadedData.resheaches = SaveControl.Reseachs;
+        // Сохранение всех счетчиков валют
+        loadedData.GoldSave = Currency.Gold;
+        loadedData.ScienceSave = Currency.Science;
 
         if (File.Exists(filePath))
         {
@@ -200,16 +252,5 @@ public class SaveControl : MonoBehaviour
             Debug.LogError("Can not save game data!");
         }
     }
-
-    /* НЕ УДАЛЯЙ
-     * добавить удаление прогресса
-    for (int i = 0; i < loadListData.Count; i++)
-    {
-        if (loadListData[i].name == "ken")
-        {
-            loadListData.Remove(loadListData[i]);
-        }
-    }   
-    */
 }
 
